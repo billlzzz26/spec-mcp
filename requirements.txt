@@ -1,0 +1,5 @@
+modal>=0.73.0
+voyageai>=0.3.2
+pymilvus>=2.4.0
+python-dotenv>=1.0.0
+numpy>=1.26.0
