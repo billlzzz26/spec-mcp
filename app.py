@@ -53,8 +53,35 @@ class VoyageClient:
         return response.results
 
 
+class SkillMetadata(TypedDict):
+    """Type definition for skill metadata.
+    
+    Required fields: skill_name, description, capabilities, plugin_domain
+    Optional fields: skill_id, provider_id, version
+    """
+    skill_name: str
+    description: str
+    capabilities: list[str]
+    plugin_domain: str
+    skill_id: NotRequired[str]
+    provider_id: NotRequired[str]
+    version: NotRequired[str]
+
+
 class ZillizClient:
     """Zilliz Cloud client"""
+
+    # Field length constants - centralized for maintainability
+    MAX_LENGTH_ID = 256
+    MAX_LENGTH_NAME = 256
+    MAX_LENGTH_DESCRIPTION = 4096
+    MAX_LENGTH_DOMAIN = 256
+    MAX_LENGTH_PROVIDER = 256
+    MAX_LENGTH_VERSION = 50
+
+    # Required metadata keys for validation
+    REQUIRED_METADATA_KEYS = frozenset({"skill_name", "description", "capabilities", "plugin_domain"})
+
     def __init__(self):
         from pymilvus import connections, utility, Collection, CollectionSchema, FieldSchema, DataType
         
@@ -72,23 +99,71 @@ class ZillizClient:
         self._FieldSchema = FieldSchema
         self._DataType = DataType
 
+    def _create_field_schemas(self) -> list:
+        """Create field schemas for the collection.
+
+        Returns a list of FieldSchema objects defining the collection structure.
+        Centralized field definitions improve maintainability and consistency.
+        """
+        return [
+            self._FieldSchema(
+                name="id",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_ID,
+                is_primary=True
+            ),
+            self._FieldSchema(
+                name="embedding",
+                dtype=self._DataType.FLOAT_VECTOR,
+                dim=self.dim
+            ),
+            self._FieldSchema(
+                name="skill_name",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_NAME
+            ),
+            self._FieldSchema(
+                name="description",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_DESCRIPTION
+            ),
+            self._FieldSchema(
+                name="capabilities",
+                dtype=self._DataType.JSON
+            ),
+            self._FieldSchema(
+                name="plugin_domain",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_DOMAIN
+            ),
+            self._FieldSchema(
+                name="provider_id",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_PROVIDER
+            ),
+            self._FieldSchema(
+                name="version",
+                dtype=self._DataType.VARCHAR,
+                max_length=self.MAX_LENGTH_VERSION
+            ),
+        ]
+
     def create_collection(self, drop_if_exists: bool = False):
+        """Create a new collection with the defined schema.
+
+        Args:
+            drop_if_exists: If True, drops existing collection before creating new one.
+
+        Returns:
+            The created Collection object.
+        """
         if self._utility.has_collection(self.collection_name):
             if drop_if_exists:
                 self._utility.drop_collection(self.collection_name)
             else:
                 return self._Collection(self.collection_name)
 
-        fields = [
-            self._FieldSchema(name="id", dtype=self._DataType.VARCHAR, max_length=256, is_primary=True),
-            self._FieldSchema(name="embedding", dtype=self._DataType.FLOAT_VECTOR, dim=self.dim),
-            self._FieldSchema(name="skill_name", dtype=self._DataType.VARCHAR, max_length=256),
-            self._FieldSchema(name="description", dtype=self._DataType.VARCHAR, max_length=4096),
-            self._FieldSchema(name="capabilities", dtype=self._DataType.JSON),
-            self._FieldSchema(name="plugin_domain", dtype=self._DataType.VARCHAR, max_length=256),
-            self._FieldSchema(name="provider_id", dtype=self._DataType.VARCHAR, max_length=256),
-            self._FieldSchema(name="version", dtype=self._DataType.VARCHAR, max_length=50),
-        ]
+        fields = self._create_field_schemas()
         schema = self._CollectionSchema(fields, description="Skill embeddings")
         collection = self._Collection(name=self.collection_name, schema=schema)
 
@@ -105,7 +180,28 @@ class ZillizClient:
             return self._Collection(self.collection_name)
         return self.create_collection()
 
-    def insert_skill(self, skill_id: str, embedding: list[float], metadata: dict) -> None:
+    def insert_skill(self, skill_id: str, embedding: list[float], metadata: SkillMetadata) -> None:
+        """Insert a skill with its embedding into the collection.
+
+        Args:
+            skill_id: Unique identifier for the skill.
+            embedding: Vector embedding of the skill.
+            metadata: Metadata dictionary containing skill information.
+
+        Raises:
+            ValueError: If required metadata keys are missing or embedding dimension is invalid.
+        """
+        # Validate metadata has required keys
+        missing_keys = self.REQUIRED_METADATA_KEYS - set(metadata.keys())
+        if missing_keys:
+            raise ValueError(f"Missing required metadata keys: {missing_keys}")
+
+        # Validate embedding dimension matches expected dimension
+        if len(embedding) != self.dim:
+            raise ValueError(
+                f"Embedding dimension mismatch: expected {self.dim}, got {len(embedding)}"
+            )
+
         collection = self.get_collection()
         data = [
             [skill_id],
@@ -143,8 +239,8 @@ class ZillizClient:
 @app.function()
 def index_skill(skill_metadata: dict) -> dict:
     """สร้าง embedding และบันทึกลง Zilliz"""
-    # Validate required keys
-    required_keys = ['skill_id', 'skill_name', 'description']
+    # Validate required keys for both index_skill and ZillizClient.insert_skill
+    required_keys = ['skill_id', 'skill_name', 'description', 'capabilities', 'plugin_domain']
     missing = [k for k in required_keys if k not in skill_metadata]
     if missing:
         return {"status": "error", "error": f"Missing required keys: {missing}"}

@@ -1,14 +1,14 @@
-"""
+'''
 mcp_server.py
 ------------
 MCP Server สำหรับ Skill Embedding Service
 ใช้ API key authentication (bl-1nk-xxxxxxxxxxxxxxxxxxxxxxxx)
-"""
+'''
 import os
 import json
 import urllib.request
 import urllib.error
-from typing import Any
+from typing import Any, Optional, List, Dict
 
 # API Key for authentication - ต้องตั้งค่าใน Modal secrets
 API_KEY = os.environ.get("SKILL_SERVICE_API_KEY", "")
@@ -117,7 +117,7 @@ def index_skill(
 def search_skills(
     query: str,
     top_k: int = 5,
-    filter_expr: str = None,
+    filter_expr: Optional[str] = None,
     api_key: str = ""
 ) -> list[dict]:
     """
@@ -152,7 +152,48 @@ def search_skills(
 
 # ===== Example Usage =====
 if __name__ == "__main__":
-    # Test
-    print("Testing search...")
-    results = search_skills("build html with react", api_key="")
-    print(results)
+    # การใช้งานต้องมี API Key ที่ถูกต้อง ซึ่งปกติจะตั้งค่าไว้ใน environment variable
+    # SKILL_SERVICE_API_KEY="your-secret-api-key"
+    
+    # หากต้องการทดสอบ ให้ใส่ API Key ของคุณที่นี่
+    TEST_API_KEY = "" # <--- ใส่ API Key ของคุณที่นี่เพื่อทดสอบ
+    
+    if not TEST_API_KEY:
+        print("กรุณาตั้งค่า TEST_API_KEY ในไฟล์ mcp_server.py เพื่อทดสอบการใช้งาน")
+    else:
+        # --- 1. สร้าง Collection (ทำครั้งแรก) ---
+        print("1. Creating collection...")
+        # หากมี collection อยู่แล้วและต้องการล้างข้อมูลเก่า ให้ใช้ drop_if_exists=True
+        create_result = create_collection(drop_if_exists=True, api_key=TEST_API_KEY)
+        print(f"Create collection result: {create_result}\n")
+
+        # --- 2. Index Skills (เพิ่มข้อมูล Skill) ---
+        print("2. Indexing skills...")
+        skill_1 = {
+            "skill_id": "file-writer",
+            "skill_name": "File Writer",
+            "description": "A tool to write content to a file at a specified path.",
+            "capabilities": ["file-system", "write"],
+            "plugin_domain": "local.dev"
+        }
+        index_result_1 = index_skill(**skill_1, api_key=TEST_API_KEY)
+        print(f"Indexing '{skill_1['skill_name']}': {index_result_1}")
+
+        skill_2 = {
+            "skill_id": "react-builder",
+            "skill_name": "React Component Builder",
+            "description": "Builds modern and interactive user interfaces using React and JSX.",
+            "capabilities": ["react", "frontend", "ui"],
+            "plugin_domain": "web.dev"
+        }
+        index_result_2 = index_skill(**skill_2, api_key=TEST_API_KEY)
+        print(f"Indexing '{skill_2['skill_name']}': {index_result_2}\n")
+
+        # --- 3. Search for a skill ---
+        print("3. Searching for skills...")
+        search_query = "how to create a user interface for a website"
+        print(f"Searching for: '{search_query}'")
+        search_results = search_skills(search_query, top_k=2, api_key=TEST_API_KEY)
+        print("Search results:")
+        for result in search_results:
+            print(result)
