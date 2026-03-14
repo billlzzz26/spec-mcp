@@ -1,0 +1,45 @@
+{
+  "name": "skill-service",
+  "version": "1.0.0",
+  "description": "Semantic skill search service using Voyage AI and Zilliz Cloud deployed on Modal Serverless",
+  "main": "app.py",
+  "scripts": {
+    "dev": "python app.py",
+    "test": "python skill_index_client.py test",
+    "build": "tsc",
+    "start": "python app.py",
+    "mcp-ui": "serve mcp-ui-client -l 3001",
+    "mcp-server": "ts-node mcp/server.ts",
+    "mcp-cli": "ts-node mcp/cli/index.ts"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "skill-service",
+    "vector-search",
+    "embedding"
+  ],
+  "author": "Skill Service Team",
+  "license": "MIT",
+  "exports": {
+    ".": "./mcp/server.ts",
+    "./cli": "./mcp/cli/index.ts"
+  },
+  "bin": {
+    "mcp-cli": "./mcp/cli/index.ts"
+  },
+  "dependencies": {
+    "@mcp-ui/client": "^7.0.0",
+    "@mcp-ui/server": "^6.1.0",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "serve": "^14.2.6"
+  }
+}

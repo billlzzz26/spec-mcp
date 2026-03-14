@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "targets": [
+    "AGENTS.md"
+  ],
+  "skills": [
+    {
+      "name": "agent-md-refactor",
+      "path": ".claude/skills/agent-md-refactor"
+    },
+    {
+      "name": "artifacts-builder",
+      "path": ".claude/skills/artifacts-builder"
+    },
+    {
+      "name": "changelog-generator",
+      "path": ".claude/skills/changelog-generator"
+    },
+    {
+      "name": "create-pull-request",
+      "path": ".claude/skills/create-pull-request"
+    },
+    {
+      "name": "mcp-builder",
+      "path": ".claude/skills/mcp-builder"
+    },
+    {
+      "name": "modal",
+      "path": ".claude/skills/modal"
+    },
+    {
+      "name": "skill-creator",
+      "path": ".claude/skills/skill-creator"
+    }
+  ]
+}
