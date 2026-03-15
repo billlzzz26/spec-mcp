@@ -315,18 +315,18 @@
 
 | # | รายการ | Phase | สถานะ | Issue |
 |---|--------|-------|--------|-------|
-| P-01 🔴 | สร้าง src/mcp/ directory และ subdirectories | Phase 1 | `[ ]` | |
-| P-02 🔴 | Move MCP server code ไป src/mcp/server/ | Phase 1 | `[ ]` | |
-| P-03 🔴 | Split catalog functionality เป็น modules | Phase 1 | `[ ]` | catalog.ts 688 lines → builder.ts, handler.ts, config/ |
+| P-01 🔴 | สร้าง src/mcp/ directory และ subdirectories | Phase 1 | `[x]` | Done: src/mcp/server/, src/mcp/catalog/ |
+| P-02 🔴 | Move MCP server code ไป src/mcp/server/ | Phase 1 | `[x]` | Done: index.ts, tools/ |
+| P-03 🔴 | Split catalog functionality เป็น modules | Phase 1 | `[x]` | Done: config/, types.ts, builder.ts, handler.ts |
 | P-04 🟡 | Update import paths ทั้งหมด | Phase 2 | `[ ]` | |
-| P-05 🔴 | ลบ duplicate server.ts files | Phase 2 | `[ ]` | src/app/mcp/server.ts vs src/mcp/server/index.ts |
-| P-06 🔴 | สร้าง src/mcp/types.ts — shared MCP types | Phase 2 | `[ ]` | |
-| P-07 🟡 | แยก catalog.ts เป็น modules (< 5k lines/file) | Phase 3 | `[ ]` | |
-| P-08 🟡 | สร้าง barrel exports สำหรับ cleaner imports | Phase 3 | `[ ]` | |
-| P-09 🟡 | อัปเดต Next.js app imports | Phase 4 | `[ ]` | |
-| P-10 🟡 | อัปเดต CLI imports (ถ้ามี) | Phase 4 | `[ ]` | |
-| P-11 🔴 | Verify no regressions หลัง refactor | Phase 5 | `[ ]` | |
-| P-12 🔴 | Run tests ทั้งหมด | Phase 5 | `[ ]` | |
+| P-05 🔴 | ลบ duplicate server.ts files | Phase 2 | `[x]` | Done: removed src/app/mcp/ |
+| P-06 🔴 | สร้าง src/mcp/types.ts — shared MCP types | Phase 2 | `[x]` | Done |
+| P-07 🟡 | แยก catalog.ts เป็น modules (< 5k lines/file) | Phase 3 | `[x]` | Done: 688 lines → 4 files (~150-250 lines each) |
+| P-08 🟡 | สร้าง barrel exports สำหรับ cleaner imports | Phase 3 | `[x]` | Done via module exports |
+| P-09 🟡 | อัปเดต Next.js app imports | Phase 4 | `[x]` | No changes needed - app imports unchanged |
+| P-10 🟡 | อัปเดต CLI imports (ถ้ามี) | Phase 4 | `[-]` | No CLI in current codebase |
+| P-11 🔴 | Verify no regressions หลัง refactor | Phase 5 | `[x]` | Tests pass 6/6 |
+| P-12 🔴 | Run tests ทั้งหมด | Phase 5 | `[x]` | npm run test:run passed |
 
 ---
 
