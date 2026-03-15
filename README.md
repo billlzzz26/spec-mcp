@@ -16,7 +16,7 @@ Semantic skill search service using Voyage AI and Zilliz Cloud deployed on Modal
 - **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS, shadcn/ui
 - **Backend**: Modal Serverless (Python/TypeScript)
 - **Database**: Zilliz Cloud (Milvus)
-- **Embeddings**: Voyage AI
+- **Embeddings**: Voyage AI (voyage-2, rerank-2)
 - **Protocol**: MCP (Model Context Protocol)
 
 ## Project Structure
@@ -43,37 +43,79 @@ skill-service/
 │       ├── index.ts              # index_skill tool
 │       ├── create-collection.ts  # create_collection tool
 │       └── health-check.ts       # health_check tool
-├── skills.config.json            # Skills configuration
+├── app.py                        # Modal deployment (444 lines)
+├── skills.config.json            # Skills configuration (95 stopwords, 8 categories)
 └── skilldex.config.json          # Skilldex configuration
 ```
+
+## Status
+
+### ✅ Completed (Layer 0-1)
+
+**Layer 0 - Catalog & Config:**
+- ✅ `skills.config.json` with full schema (indexing, stopwords, categories, bundles)
+- ✅ `catalog.ts` (688 lines) with buildCatalog, buildAliases, buildBundles
+- ✅ 5 MCP Catalog Tools: list_skills, search_skills, get_skill, list_bundles, update_catalog_config
+
+**Layer 1 - Vector Search:**
+- ✅ Modal app deployed: https://modal.com/apps/billlzzz10/main/deployed/skill-embedding-service
+- ✅ 4 HTTP Endpoints:
+  - `health_check` - https://billlzzz10--skill-embedding-service-health-check.modal.run
+  - `search_skills_http` - https://billlzzz10--skill-embedding-service-search-skills-http.modal.run
+  - `index_skill_http` - https://billlzzz10--skill-embedding-service-index-skill-http.modal.run
+  - `create_collection_http` - https://billlzzz10--skill-embedding-service-create-collection-http.modal.run
+- ✅ Voyage AI integration (voyage-2 embeddings, rerank-2)
+- ✅ Zilliz Cloud integration (HNSW index, COSINE metric)
+
+### ❌ Pending (Layer 2-4)
+
+**Layer 2 - Tracking & Metrics:** Not implemented
+- Database migration (Drizzle ORM)
+- Hook system (preInvocation, postInvocation, errorInvocation)
+- MCP tracking tools
+
+**Layer 3 - Evaluation:** Not implemented
+- Assertion runner
+- Test case persistence
+- Version comparison
+
+**Layer 4 - Dashboard:** Partial
+- ✅ shadcn/ui components
+- ❌ Analytics charts
+- ❌ Real-time updates
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- pnpm or npm
-- Modal account (for deployment)
+- Python 3.11+ (for Modal)
+- Modal account
 - Voyage AI API key
 - Zilliz Cloud credentials
 
 ### Installation
 
 ```bash
-# Install dependencies
+# Install Node.js dependencies
 npm install
+
+# Install Python dependencies (in .venv)
+python -m venv .venv
+source .venv/bin/activate
+pip install modal voyageai pymilvus fastapi
 
 # Set up environment variables
 export SKILL_SERVICE_API_KEY="your-api-key"
 export VOYAGE_API_KEY="your-voyage-key"
-export ZILLIZ_ENDPOINT="your-zilliz-endpoint"
+export ZILLIZ_URI="your-zilliz-uri"
 export ZILLIZ_TOKEN="your-zilliz-token"
 ```
 
 ### Development
 
 ```bash
-# Start development server
+# Start Next.js dev server
 npm run dev
 
 # Run unit tests
@@ -84,100 +126,49 @@ npm run test:e2e
 
 # Build for production
 npm run build
+```
 
-# Start production server
-npm run start
+### Deploy to Modal
+
+```bash
+# Activate venv
+source .venv/bin/activate
+
+# Deploy
+modal deploy app.py
 ```
 
 ## MCP Tools
 
 ### Core Tools (4 tools)
 
-1. **search_skills** - Search skills using semantic search with AI reranking
-   ```json
-   {
-     "query": "build HTML UI with React",
-     "top_k": 5,
-     "filter_expr": "plugin_domain == 'development'"
-   }
-   ```
-
-2. **index_skill** - Index a new skill into the embedding database
-   ```json
-   {
-     "skill_id": "my-skill",
-     "skill_name": "My Skill",
-     "description": "Skill description...",
-     "capabilities": ["mcp", "api"],
-     "plugin_domain": "development",
-     "version": "1.0.0"
-   }
-   ```
-
-3. **create_collection** - Create Zilliz vector database collection
-   ```json
-   {
-     "drop_if_exists": false
-   }
-   ```
-
-4. **health_check** - Check service health status
-   ```json
-   {}
-   ```
+| Tool | Description | Endpoint |
+|------|-------------|----------|
+| `search_skills` | Semantic search with AI reranking | `/search-skills` |
+| `index_skill` | Index a new skill | `/index-skill` |
+| `create_collection` | Create Zilliz collection | `/create-collection` |
+| `health_check` | Check service health | `/health-check` |
 
 ### Catalog Tools (5 tools)
 
-5. **list_skills** - List all available skills with filtering
-   ```json
-   {
-     "category": "development",
-     "bundle": "core-dev",
-     "limit": 50
-   }
-   ```
-
-6. **search_skills** (Catalog) - Search skills by keyword with scoring
-   ```json
-   {
-     "query": "react component",
-     "category": "ui",
-     "limit": 10
-   }
-   ```
-
-7. **get_skill** - Get detailed skill information by ID or alias
-   ```json
-   {
-     "id": "mcp-builder"
-   }
-   ```
-
-8. **list_bundles** - List all bundles and their included skills
-   ```json
-   {}
-   ```
-
-9. **update_catalog_config** - Update catalog configuration at runtime
-   ```json
-   {
-     "target": "category",
-     "name": "development",
-     "action": "add",
-     "keywords": ["typescript", "javascript"]
-   }
-   ```
+| Tool | Description |
+|------|-------------|
+| `list_skills` | List skills with category/bundle filtering |
+| `search_skills` | Keyword search with trigger matching |
+| `get_skill` | Get skill details by ID or alias |
+| `list_bundles` | List all bundles and included skills |
+| `update_catalog_config` | Update config at runtime |
 
 ### Usage Example
 
 ```typescript
-// Connect via MCP host
-const result = await mcpClient.callTool("search_skills", {
+// Search skills
+const results = await mcpClient.callTool("search_skills", {
   query: "build HTML UI with React",
   top_k: 5
 });
 
-// List skills
+// List skills by category
 const skills = await mcpClient.callTool("list_skills", {
   category: "development",
   limit: 20
@@ -189,17 +180,9 @@ const skill = await mcpClient.callTool("get_skill", {
 });
 ```
 
-## API Endpoints
-
-### POST /api
-MCP protocol endpoint for tool calls.
-
-### GET /mcp
-MCP resource endpoint for widget UI.
-
 ## Configuration
 
-### skilldex.config.json
+### skills.config.json
 
 ```json
 {
@@ -210,56 +193,73 @@ MCP resource endpoint for widget UI.
     "aliasMinLength": 28,
     "aliasMinTokens": 4
   },
-  "stopwords": {
-    "tokens": ["the", "a", "an", "is", "are"]
-  },
-  "tagStopwords": {
-    "tokens": ["skill", "tool", "function"]
-  },
+  "stopwords": { "tokens": [...] },
+  "tagStopwords": { "tokens": [...] },
   "categories": {
     "rules": [
-      {
-        "name": "development",
-        "keywords": ["code", "build", "test"]
-      }
+      { "name": "security", "keywords": [...] },
+      { "name": "infrastructure", "keywords": [...] },
+      { "name": "data-ai", "keywords": [...] },
+      { "name": "development", "keywords": [...] },
+      { "name": "architecture", "keywords": [...] },
+      { "name": "testing", "keywords": [...] },
+      { "name": "business", "keywords": [...] },
+      { "name": "workflow", "keywords": [...] }
     ],
     "fallback": "general"
   },
   "bundles": {
     "groups": {
-      "core": {
-        "description": "Core skills",
-        "keywords": ["core", "essential"]
-      }
+      "core-dev": {...},
+      "security-core": {...},
+      "k8s-core": {...},
+      "data-core": {...},
+      "ops-core": {...}
     }
   },
-  "curatedCommon": {
-    "skills": []
-  }
+  "curatedCommon": { "skills": [...] }
 }
 ```
 
 ## Testing
 
-### Unit Tests
+### Unit Tests (Vitest)
 ```bash
 npm run test:run
-# 6 tests covering UI components
+# 6 tests: UI rendering, search functionality, error handling
 ```
 
-### E2E Tests
+### E2E Tests (Playwright)
 ```bash
 npm run test:e2e
-# 30+ tests covering UI/UX, accessibility, responsiveness
+# 30+ tests: UI/UX, accessibility, responsiveness, mobile
 ```
 
-## Deployment
+## API Endpoints
 
-Deploy to Modal:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Skill Service Widget UI |
+| GET | `/mcp` | MCP resource endpoint |
+| POST | `/api` | MCP protocol endpoint |
+| GET | `/health-check` | Health check (Modal) |
+| POST | `/search-skills` | Semantic search (Modal) |
+| POST | `/index-skill` | Index skill (Modal) |
+| POST | `/create-collection` | Create collection (Modal) |
 
-```bash
-modal deploy app.py
-```
+## Documentation
+
+- [API Design](docs/api-design.md)
+- [Code Style](docs/code-style.md)
+- [General Guidelines](docs/general-guidelines.md)
+- [Git Workflow](docs/git-workflow.md)
+- [OpenSpec](docs/OPENSPEC.md)
+- [Performance](docs/performance-optimization.md)
+- [Project Setup](docs/project-setup.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Security](docs/security-practices.md)
+- [Testing](docs/testing-guidelines.md)
+- [TypeScript](docs/typescript-rules.md)
 
 ## License
 

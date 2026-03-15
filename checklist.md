@@ -309,6 +309,46 @@
 
 ---
 
+## Plan Implementation Tasks
+
+> จาก PLAN.md — โครงสร้างและ optimization
+
+| # | รายการ | Phase | สถานะ | Issue |
+|---|--------|-------|--------|-------|
+| P-01 🔴 | สร้าง src/mcp/ directory และ subdirectories | Phase 1 | `[ ]` | |
+| P-02 🔴 | Move MCP server code ไป src/mcp/server/ | Phase 1 | `[ ]` | |
+| P-03 🔴 | Split catalog functionality เป็น modules | Phase 1 | `[ ]` | catalog.ts 688 lines → builder.ts, handler.ts, config/ |
+| P-04 🟡 | Update import paths ทั้งหมด | Phase 2 | `[ ]` | |
+| P-05 🔴 | ลบ duplicate server.ts files | Phase 2 | `[ ]` | src/app/mcp/server.ts vs src/mcp/server/index.ts |
+| P-06 🔴 | สร้าง src/mcp/types.ts — shared MCP types | Phase 2 | `[ ]` | |
+| P-07 🟡 | แยก catalog.ts เป็น modules (< 5k lines/file) | Phase 3 | `[ ]` | |
+| P-08 🟡 | สร้าง barrel exports สำหรับ cleaner imports | Phase 3 | `[ ]` | |
+| P-09 🟡 | อัปเดต Next.js app imports | Phase 4 | `[ ]` | |
+| P-10 🟡 | อัปเดต CLI imports (ถ้ามี) | Phase 4 | `[ ]` | |
+| P-11 🔴 | Verify no regressions หลัง refactor | Phase 5 | `[ ]` | |
+| P-12 🔴 | Run tests ทั้งหมด | Phase 5 | `[ ]` | |
+
+---
+
+## Review Issues & Fixes
+
+> ตรวจสอบและ confirm แต่ละข้อหลังแก้ไขในสภาพแวดล้อมจริง
+
+| # | ความรุนแรง | Issue | แนวทางแก้ | สถานะ | Issue |
+|---|-----------|-------|-----------|--------|-------|
+| R-01 🔴 | ไม่มี `drizzle.config.ts` — ไม่สามารถ run migration | สร้างไฟล์ config ระบุ DB URL, schema path | `[ ]` | |
+| R-02 🔴 | MCP tools ไม่มี Zod validation บน input | เพิ่ม `z.parse()` ก่อน logic ทุก case | `[ ]` | |
+| R-03 🔴 | `search_skills` MCP ยังใช้ keyword ไม่ใช่ vector | implement Layer 1 ก่อน production | `[x]` | Layer 1 done - Modal deployed |
+| R-04 🔴 | Layer 1 ยังไม่มี — rerank ในสเปกยังไม่ได้ทำ | ทำ Modal single-file ก่อน | `[x]` | Layer 1 done - app.py deployed |
+| R-05 🟡 | `readSkill()` parse frontmatter ด้วย regex fragile | เปลี่ยนเป็น `gray-matter` | `[ ]` | |
+| R-06 🟡 | `update_catalog_config` เขียนทับ config ทันที ไม่มี backup | เพิ่ม `.bak` ก่อน write | `[ ]` | |
+| R-07 🟡 | Hook `withTracking()` ไม่มี timeout — skill ค้างไม่เปลี่ยน status | เพิ่ม TTL auto-fail | `[ ]` | |
+| R-08 🟡 | `assertionPassRate` รวมทุก skill ไม่แยก per skill | แยก groupBy skillId | `[ ]` | |
+| R-09 🟢 | ไม่มี `skill_version` tracking | เพิ่ม version field จาก frontmatter | `[ ]` | |
+| R-10 🟢 | `CATALOG.md` ไม่มี TOC | เพิ่ม TOC per category | `[ ]` | |
+
+---
+
 ## Documentation Plan
 
 > ทำหลังจากทุก layer ผ่าน checklist ข้างต้นแล้วเท่านั้น
