@@ -1,5 +1,5 @@
 /**
- * catalog/index.ts
+ * catalog.ts
  * ----------
  * Skill Catalog Builder — TS port พร้อม MCP tool definitions
  * ใช้ config จาก skills.config.json แทน hardcode ทั้งหมด
@@ -23,6 +23,7 @@ const CategoryRuleSchema = z.object({
 })
 
 const BundleGroupSchema = z.record(
+  z.string(),
   z.object({
     description: z.string(),
     keywords: z.array(z.string()),

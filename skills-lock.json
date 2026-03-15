@@ -1,10 +1,25 @@
 {
   "version": 1,
   "skills": {
+    "Webhook Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "computedHash": "1df4d6308b87de01df422a895a6e5a1fece4bd777ba14955e267579b1cfa72dc"
+    },
+    "add-educational-comments": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "65f6defd9f7da4af496d3c706839d2f48da6761b5eb1bb21ffc7f7aa35288670"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
       "computedHash": "1ec42c9b918b315d8e5c6c856b78c3c4725fc93dea30b9b7e9975c69848fcce6"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "computedHash": "0a413bf988d06481f69bb81df2070741c3ba12dd9f1be2706d57f259c905992d"
     }
   }
 }

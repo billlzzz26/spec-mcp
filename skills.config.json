@@ -1,0 +1,171 @@
+{
+  "$schema": "./skills.config.schema.json",
+  "version": "1.0.0",
+
+  "indexing": {
+    "maxTriggers": 12,
+    "minTokenLength": 2,
+    "aliasMinLength": 28,
+    "aliasMinTokens": 4
+  },
+
+  "stopwords": {
+    "description": "กรอง token ทั่วไปออกจาก trigger generation",
+    "tokens": [
+      "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "from",
+      "has", "have", "in", "into", "is", "it", "its", "of", "on", "or", "our",
+      "out", "over", "that", "the", "their", "they", "this", "to", "use", "when",
+      "with", "you", "your", "will", "can", "if", "not", "only", "also", "more",
+      "best", "practice", "practices", "expert", "specialist", "focused", "focus",
+      "master", "modern", "advanced", "comprehensive", "production",
+      "production-ready", "ready", "build", "create", "deliver", "design",
+      "implement", "implementation", "strategy", "strategies", "patterns",
+      "pattern", "workflow", "workflows", "guide", "template", "templates",
+      "tool", "tools", "project", "projects", "support", "manage", "management",
+      "system", "systems", "services", "service", "across", "end", "end-to-end",
+      "using", "based", "ensure", "help", "needs", "need", "focuses", "handles",
+      "builds", "make"
+    ]
+  },
+
+  "tagStopwords": {
+    "description": "กรอง token ออกจาก tag derivation",
+    "tokens": [
+      "pro", "expert", "patterns", "pattern", "workflow", "workflows",
+      "templates", "template", "toolkit", "tools", "tool", "project", "projects",
+      "guide", "management", "engineer", "architect", "developer", "specialist",
+      "assistant", "analysis", "review", "reviewer", "automation", "orchestration",
+      "scaffold", "scaffolding", "implementation", "strategy", "context",
+      "feature", "features", "smart", "system", "systems", "design",
+      "development", "test", "testing"
+    ]
+  },
+
+  "categories": {
+    "description": "Rule-based category detection — ลำดับสำคัญ: match แรกชนะ",
+    "rules": [
+      {
+        "name": "security",
+        "description": "Security, compliance, privacy, threat analysis",
+        "keywords": [
+          "security", "sast", "compliance", "privacy", "threat", "vulnerability",
+          "owasp", "pci", "gdpr", "secrets", "risk", "malware", "forensics",
+          "attack", "incident", "auth", "mtls", "zero", "trust"
+        ]
+      },
+      {
+        "name": "infrastructure",
+        "description": "Cloud, Kubernetes, DevOps, observability",
+        "keywords": [
+          "kubernetes", "k8s", "helm", "terraform", "cloud", "network", "devops",
+          "gitops", "prometheus", "grafana", "observability", "monitoring",
+          "logging", "tracing", "deployment", "istio", "linkerd", "service",
+          "mesh", "slo", "sre", "oncall", "incident", "pipeline", "cicd",
+          "ci", "cd", "kafka"
+        ]
+      },
+      {
+        "name": "data-ai",
+        "description": "Data engineering, ML, AI, vector databases",
+        "keywords": [
+          "data", "database", "db", "sql", "postgres", "mysql", "analytics",
+          "etl", "warehouse", "dbt", "ml", "ai", "llm", "rag", "vector",
+          "embedding", "spark", "airflow", "cdc", "pipeline"
+        ]
+      },
+      {
+        "name": "development",
+        "description": "Programming languages and frameworks",
+        "keywords": [
+          "python", "javascript", "typescript", "java", "golang", "go", "rust",
+          "csharp", "dotnet", "php", "ruby", "node", "react", "frontend",
+          "backend", "mobile", "ios", "android", "flutter", "fastapi", "django",
+          "nextjs", "vue", "api"
+        ]
+      },
+      {
+        "name": "architecture",
+        "description": "System architecture, ADR, microservices, DDD",
+        "keywords": [
+          "architecture", "c4", "microservices", "event", "cqrs", "saga",
+          "domain", "ddd", "patterns", "decision", "adr"
+        ]
+      },
+      {
+        "name": "testing",
+        "description": "Testing, TDD, QA, E2E",
+        "keywords": ["testing", "tdd", "unit", "e2e", "qa", "test"]
+      },
+      {
+        "name": "business",
+        "description": "Business, marketing, legal, finance",
+        "keywords": [
+          "business", "market", "sales", "finance", "startup", "legal", "hr",
+          "product", "customer", "seo", "marketing", "kpi", "contract",
+          "employment"
+        ]
+      },
+      {
+        "name": "workflow",
+        "description": "Workflow automation, orchestration, process",
+        "keywords": [
+          "workflow", "orchestration", "conductor", "automation", "process",
+          "collaboration"
+        ]
+      }
+    ],
+    "fallback": "general"
+  },
+
+  "bundles": {
+    "description": "Skill bundles สำหรับ grouping ตาม domain",
+    "groups": {
+      "core-dev": {
+        "description": "Core development skills across languages, frameworks, and backend/frontend fundamentals.",
+        "keywords": [
+          "python", "javascript", "typescript", "go", "golang", "rust", "java",
+          "node", "frontend", "backend", "react", "fastapi", "django", "nextjs",
+          "api", "mobile", "ios", "android", "flutter", "php", "ruby"
+        ]
+      },
+      "security-core": {
+        "description": "Security, privacy, and compliance essentials.",
+        "keywords": [
+          "security", "sast", "compliance", "threat", "risk", "privacy",
+          "secrets", "owasp", "gdpr", "pci", "vulnerability", "auth"
+        ]
+      },
+      "k8s-core": {
+        "description": "Kubernetes and service mesh essentials.",
+        "keywords": ["kubernetes", "k8s", "helm", "istio", "linkerd", "service", "mesh"]
+      },
+      "data-core": {
+        "description": "Data engineering and analytics foundations.",
+        "keywords": [
+          "data", "database", "sql", "dbt", "airflow", "spark", "analytics",
+          "etl", "warehouse", "postgres", "mysql", "kafka"
+        ]
+      },
+      "ops-core": {
+        "description": "Operations, observability, and delivery pipelines.",
+        "keywords": [
+          "observability", "monitoring", "logging", "tracing", "prometheus",
+          "grafana", "devops", "gitops", "deployment", "cicd", "pipeline",
+          "slo", "sre", "incident"
+        ]
+      }
+    }
+  },
+
+  "curatedCommon": {
+    "description": "Skills ที่แนะนำสำหรับผู้ใช้ทั่วไป (ไม่ขึ้นกับ bundle)",
+    "skills": [
+      "bash-pro", "python-pro", "javascript-pro", "typescript-pro",
+      "golang-pro", "rust-pro", "java-pro", "frontend-developer",
+      "backend-architect", "nodejs-backend-patterns", "fastapi-pro",
+      "api-design-principles", "sql-pro", "database-architect",
+      "kubernetes-architect", "terraform-specialist", "observability-engineer",
+      "security-auditor", "sast-configuration", "gitops-workflow"
+    ]
+  }
+}

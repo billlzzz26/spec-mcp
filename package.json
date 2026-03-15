@@ -3,14 +3,18 @@
   "version": "1.0.0",
   "description": "Semantic skill search service using Voyage AI and Zilliz Cloud deployed on Modal Serverless",
   "main": "app.py",
+  "type": "module",
   "scripts": {
-    "dev": "python app.py",
-    "test": "python skill_index_client.py test",
-    "build": "tsc",
-    "start": "python app.py",
-    "mcp-ui": "serve mcp-ui-client -l 3001",
-    "mcp-server": "ts-node mcp/server.ts",
-    "mcp-cli": "ts-node mcp/cli/index.ts"
+    "dev": "next dev",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "dev-ui": "vite",
+    "build-ui": "vite build"
   },
   "keywords": [
     "mcp",
@@ -21,25 +25,42 @@
   ],
   "author": "Skill Service Team",
   "license": "MIT",
-  "exports": {
-    ".": "./mcp/server.ts",
-    "./cli": "./mcp/cli/index.ts"
-  },
-  "bin": {
-    "mcp-cli": "./mcp/cli/index.ts"
-  },
   "dependencies": {
-    "@mcp-ui/client": "^7.0.0",
-    "@mcp-ui/server": "^6.1.0",
-    "@types/node": "^25.5.0",
+    "@modelcontextprotocol/ext-apps": "^1.2.2",
+    "@modelcontextprotocol/sdk": "1.25.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "biome": "^0.3.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "knip": "^5.86.0",
+    "lucide-react": "^0.577.0",
+    "mcp-handler": "^1.0.7",
+    "next": "16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "tailwind-merge": "^3.5.0",
+    "typescript": "^5.9.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "serve": "^14.2.6"
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^25.5.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.1.6",
+    "jsdom": "^28.1.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1",
+    "tailwindcss-animate": "^1.0.7",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
   }
 }
