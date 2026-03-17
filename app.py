@@ -382,8 +382,8 @@ def _check_api_key(request: Request) -> None:
 """ตรวจสอบ API key จาก header"""
 provided_key = request.headers.get("X-API-Key")
 if not settings.SKILL_SERVICE_API_KEY or provided_key != settings.SKILL_SERVICE_API_KEY:
-logger.warning(f"Invalid API key attempt: {provided_key}")
-raise error_response("Invalid or missing API key", status_code=401)
+    logger.warning("Invalid API key attempt")
+    raise error_response("Invalid or missing API key", status_code=401)
 
 def _check_rate_limit(user_id: str, endpoint: str) -> None:
 """Rate limiting แบบง่าย (100 requests per minute)"""
