@@ -11,7 +11,7 @@ import {
   truncate,
   buildCatalog,
 } from './builder.js'
-import type { CatalogState } from './types.js'
+import type { CatalogState, CatalogSkill } from './types.js'
 
 // ─── MCP Tool Definitions ─────────────────────────────────────────────────────
 
@@ -157,11 +157,11 @@ export function createCatalogHandler(opts: {
 
         if (bundle) {
           const bundleSkills = new Set(state.bundleData.bundles[bundle]?.skills ?? [])
-          skills = skills.filter((s) => bundleSkills.has(s.id))
+          skills = skills.filter((s: CatalogSkill) => bundleSkills.has(s.id))
         }
 
         if (category) {
-          skills = skills.filter((s) => s.category === category)
+          skills = skills.filter((s: CatalogSkill) => s.category === category)
         }
 
         return {
@@ -181,12 +181,12 @@ export function createCatalogHandler(opts: {
         }
 
         const queryTokens = new Set(
-          tokenize(query).filter((t) => t.length >= 2),
+          tokenize(query).filter((t: string) => t.length >= 2),
         )
 
         let skills = state.catalog.skills
         if (category) {
-          skills = skills.filter((s) => s.category === category)
+          skills = skills.filter((s: CatalogSkill) => s.category === category)
         }
 
         // Score: count ของ query tokens ที่ match trigger/tag
@@ -204,7 +204,7 @@ export function createCatalogHandler(opts: {
             }
             return { skill, score }
           })
-          .filter((r) => r.score > 0)
+          .filter((r: { skill: CatalogSkill; score: number }) => r.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, limit)
 
@@ -270,24 +270,24 @@ export function createCatalogHandler(opts: {
           const current = state.config.stopwords.tokens
           state.config.stopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'tagStopwords') {
           const current = state.config.tagStopwords.tokens
           state.config.tagStopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'category') {
           if (!name) return { error: '`name` is required for target=category' }
-          const rule = state.config.categories.rules.find((r) => r.name === name)
+          const rule = state.config.categories.rules.find((r: { name: string; keywords: string[] }) => r.name === name)
           if (!rule) return { error: `Category "${name}" not found` }
 
           rule.keywords = action === 'add'
             ? unique([...rule.keywords, ...kw])
-            : rule.keywords.filter((k) => !kw.includes(k))
+            : rule.keywords.filter((k: string) => !kw.includes(k))
         }
 
         else if (target === 'bundle') {
@@ -297,7 +297,7 @@ export function createCatalogHandler(opts: {
 
           group.keywords = action === 'add'
             ? unique([...group.keywords, ...kw])
-            : group.keywords.filter((k) => !kw.includes(k))
+            : group.keywords.filter((k: string) => !kw.includes(k))
         }
 
         // rebuild catalog ด้วย config ใหม่
