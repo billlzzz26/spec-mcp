@@ -11,7 +11,7 @@ import {
   truncate,
   buildCatalog,
 } from './builder.js'
-import type { CatalogState } from './types.js'
+import type { CatalogState, CatalogSkill } from './types.js'
 
 // ─── MCP Tool Definitions ─────────────────────────────────────────────────────
 
@@ -157,11 +157,11 @@ export function createCatalogHandler(opts: {
 
         if (bundle) {
           const bundleSkills = new Set(state.bundleData.bundles[bundle]?.skills ?? [])
-          skills = skills.filter((s) => bundleSkills.has(s.id))
+          skills = skills.filter((s: CatalogSkill) => bundleSkills.has(s.id))
         }
 
         if (category) {
-          skills = skills.filter((s) => s.category === category)
+          skills = skills.filter((s: CatalogSkill) => s.category === category)
         }
 
         return {
@@ -181,12 +181,12 @@ export function createCatalogHandler(opts: {
         }
 
         const queryTokens = new Set(
-          tokenize(query).filter((t) => t.length >= 2),
+          tokenize(query).filter((t: string) => t.length >= 2),
         )
 
         let skills = state.catalog.skills
         if (category) {
-          skills = skills.filter((s) => s.category === category)
+          skills = skills.filter((s: CatalogSkill) => s.category === category)
         }
 
         // Score: count ของ query tokens ที่ match trigger/tag
@@ -204,7 +204,7 @@ export function createCatalogHandler(opts: {
             }
             return { skill, score }
           })
-          .filter((r) => r.score > 0)
+          .filter((r: { skill: CatalogSkill; score: number }) => r.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, limit)
 

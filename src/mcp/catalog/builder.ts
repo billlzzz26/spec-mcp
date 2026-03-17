@@ -51,7 +51,7 @@ function deriveTags(skill: RawSkill, tagStopwords: Set<string>): string[] {
     tags = skill.id
       .split('-')
       .map((t) => t.toLowerCase())
-      .filter((t) => t && !tagStopwords.has(t))
+      .filter((t: string) => t && !tagStopwords.has(t))
   }
 
   return normalizeTokens(tags)
@@ -178,7 +178,7 @@ function listSkillIds(skillsDir: string): string[] {
   if (!fs.existsSync(skillsDir)) return []
   return fs
     .readdirSync(skillsDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
+    .filter((d: fs.Dirent) => d.isDirectory())
     .map((d) => d.name)
 }
 
