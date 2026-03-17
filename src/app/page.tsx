@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, CheckCircle, AlertCircle, Loader2, Sparkles, Database, Activity, PlusCircle } from "lucide-react";
+import { GlowingEffect } from "@/components/ui/glowing-effect";
 import type { App } from "@modelcontextprotocol/ext-apps";
 
 // MCP App singleton - เก็บฟังก์ชันเดิม
@@ -201,49 +202,82 @@ export default function SkillServiceWidget() {
           </div>
         </header>
 
-        {/* Stats Cards - เพิ่มข้อมูล tech stack */}
+        {/* Stats Cards - เพิ่มข้อมูล tech stack พร้อม GlowingEffect */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/10">
-                  <Database className="h-5 w-5 text-blue-400" />
+          {/* Card 1: Vector Database */}
+          <div className="relative rounded-xl">
+            <GlowingEffect
+              spread={40}
+              glow={true}
+              disabled={false}
+              proximity={64}
+              inactiveZone={0.01}
+              borderWidth={2}
+            />
+            <Card className="relative bg-slate-900/50 border-slate-800 backdrop-blur-sm h-full">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-blue-500/10">
+                    <Database className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400">Vector Database</p>
+                    <p className="text-lg font-semibold">Zilliz Cloud</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-400">Vector Database</p>
-                  <p className="text-lg font-semibold">Zilliz Cloud</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
           
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-cyan-500/10">
-                  <Activity className="h-5 w-5 text-cyan-400" />
+          {/* Card 2: Embeddings */}
+          <div className="relative rounded-xl">
+            <GlowingEffect
+              spread={40}
+              glow={true}
+              disabled={false}
+              proximity={64}
+              inactiveZone={0.01}
+              borderWidth={2}
+            />
+            <Card className="relative bg-slate-900/50 border-slate-800 backdrop-blur-sm h-full">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-cyan-500/10">
+                    <Activity className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400">Embeddings</p>
+                    <p className="text-lg font-semibold">Voyage AI</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-400">Embeddings</p>
-                  <p className="text-lg font-semibold">Voyage AI</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
           
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/10">
-                  <PlusCircle className="h-5 w-5 text-purple-400" />
+          {/* Card 3: Integration */}
+          <div className="relative rounded-xl">
+            <GlowingEffect
+              spread={40}
+              glow={true}
+              disabled={false}
+              proximity={64}
+              inactiveZone={0.01}
+              borderWidth={2}
+            />
+            <Card className="relative bg-slate-900/50 border-slate-800 backdrop-blur-sm h-full">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/10">
+                    <PlusCircle className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400">Integration</p>
+                    <p className="text-lg font-semibold">MCP Protocol</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-400">Integration</p>
-                  <p className="text-lg font-semibold">MCP Protocol</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Search Form - ปรับปรุง UI แต่เก็บฟังก์ชันเดิม */}
