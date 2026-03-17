@@ -282,7 +282,7 @@ export function createCatalogHandler(opts: {
 
         else if (target === 'category') {
           if (!name) return { error: '`name` is required for target=category' }
-          const rule = state.config.categories.rules.find((r) => r.name === name)
+          const rule = state.config.categories.rules.find((r: { name: string; keywords: string[] }) => r.name === name)
           if (!rule) return { error: `Category "${name}" not found` }
 
           rule.keywords = action === 'add'
