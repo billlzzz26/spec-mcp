@@ -678,12 +678,16 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 mkdir -p "$BACKUP_DIR"
 
+PROJECT_PREFIX="${COMPOSE_PROJECT_NAME:-$(basename "$(pwd)")}"
+OPENWEBUI_VOLUME="${PROJECT_PREFIX}_open-webui-data"
+OLLAMA_VOLUME="${PROJECT_PREFIX}_ollama-data"
+
 echo "🔄 Backing up Open WebUI data..."
-docker run --rm -v open-webui-data:/data -v "$(pwd)/$BACKUP_DIR":/backup \
+docker run --rm -v "${OPENWEBUI_VOLUME}:/data" -v "$(pwd)/$BACKUP_DIR":/backup \
   alpine tar czf "/backup/open-webui-$TIMESTAMP.tar.gz" -C /data .
 
 echo "🔄 Backing up Ollama models..."
-docker run --rm -v ollama-data:/data -v "$(pwd)/$BACKUP_DIR":/backup \
+docker run --rm -v "${OLLAMA_VOLUME}:/data" -v "$(pwd)/$BACKUP_DIR":/backup \
   alpine tar czf "/backup/ollama-$TIMESTAMP.tar.gz" -C /data .
 
 echo "🔄 Backing up PostgreSQL..."
