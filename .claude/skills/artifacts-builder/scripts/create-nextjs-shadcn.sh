@@ -270,4 +270,4 @@ echo "  ✅ Tailwind CSS"
 echo "  ✅ shadcn/ui (40+ components)"
 echo "  ✅ Dark mode support"
 echo "  ✅ Path aliases (@/)"
-EOF
+# End of script
