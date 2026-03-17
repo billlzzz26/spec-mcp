@@ -507,7 +507,7 @@ query_embedding = voyage.embed_query(query, model="voyage-2")
     return final_results  
 except Exception as e:  
     logger.error(f"Error searching skills: {str(e)}", exc_info=True)  
-    return {"error": str(e)}
+    return []
 
 @app.function()
 def create_collection(drop_if_exists: bool = False):
