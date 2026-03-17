@@ -53,13 +53,11 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-react": "^6.0.1",
-    "autoprefixer": "^10.4.27",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.6",
     "jsdom": "^28.1.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
-    "tailwindcss-animate": "^1.0.7",
     "vite": "^8.0.0",
     "vitest": "^4.1.0"
   }
