@@ -106,11 +106,11 @@ def success_response(data: Any = None) -> dict:
 return {"status": "success", "data": data}
 
 def error_response(message: str, detail: Any = None, status_code: int = 400) -> HTTPException:
-logger.error(f"Error: {message}, detail: {detail}")
-return HTTPException(
-status_code=status_code,
-content={"status": "error", "message": message, "detail": detail}
-)
+    logger.error(f"Error: {message}, detail: {detail}")
+    return HTTPException(
+        status_code=status_code,
+        detail={"status": "error", "message": message, "detail": detail}
+    )
 
 ===== Client Classes (inline) =====
 
