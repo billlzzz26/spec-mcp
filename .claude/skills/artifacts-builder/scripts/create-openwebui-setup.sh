@@ -805,4 +805,3 @@ echo -e "${BLUE}📚 Resources:${NC}"
 echo "  https://github.com/open-webui/open-webui"
 echo "  https://ollama.ai"
 echo "  https://docs.docker.com"
-EOF
