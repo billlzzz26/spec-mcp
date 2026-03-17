@@ -270,24 +270,24 @@ export function createCatalogHandler(opts: {
           const current = state.config.stopwords.tokens
           state.config.stopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'tagStopwords') {
           const current = state.config.tagStopwords.tokens
           state.config.tagStopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'category') {
           if (!name) return { error: '`name` is required for target=category' }
-          const rule = state.config.categories.rules.find((r) => r.name === name)
+          const rule = state.config.categories.rules.find((r: { name: string; keywords: string[] }) => r.name === name)
           if (!rule) return { error: `Category "${name}" not found` }
 
           rule.keywords = action === 'add'
             ? unique([...rule.keywords, ...kw])
-            : rule.keywords.filter((k) => !kw.includes(k))
+            : rule.keywords.filter((k: string) => !kw.includes(k))
         }
 
         else if (target === 'bundle') {
@@ -297,7 +297,7 @@ export function createCatalogHandler(opts: {
 
           group.keywords = action === 'add'
             ? unique([...group.keywords, ...kw])
-            : group.keywords.filter((k) => !kw.includes(k))
+            : group.keywords.filter((k: string) => !kw.includes(k))
         }
 
         // rebuild catalog ด้วย config ใหม่
