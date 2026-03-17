@@ -121,7 +121,7 @@ const GlowingEffect = memo(
             90;
 
           // คำนวณ shortest path สำหรับ angle interpolation
-          const angleDiff = ((targetAngle - currentAngle + 180) % 360) - 180;
+          const angleDiff = ((targetAngle - currentAngle + 540) % 360) - 180;
           const newAngle = currentAngle + angleDiff;
 
           // Animate ไปยังมุมใหม่ด้วย easing curve ที่ smooth
