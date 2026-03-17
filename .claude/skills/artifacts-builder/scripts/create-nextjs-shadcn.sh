@@ -85,7 +85,8 @@ pnpm install \
   date-fns \
   react-hook-form \
   @hookform/resolvers \
-  zod
+  zod \
+    tailwindcss-animate
 
 echo -e "${GREEN}🎨 Updating tailwind.config.ts...${NC}"
 cat > tailwind.config.ts << 'EOF'
