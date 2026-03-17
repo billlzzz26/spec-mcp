@@ -270,14 +270,14 @@ export function createCatalogHandler(opts: {
           const current = state.config.stopwords.tokens
           state.config.stopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'tagStopwords') {
           const current = state.config.tagStopwords.tokens
           state.config.tagStopwords.tokens = action === 'add'
             ? unique([...current, ...kw])
-            : current.filter((t) => !kw.includes(t))
+            : current.filter((t: string) => !kw.includes(t))
         }
 
         else if (target === 'category') {
@@ -287,7 +287,7 @@ export function createCatalogHandler(opts: {
 
           rule.keywords = action === 'add'
             ? unique([...rule.keywords, ...kw])
-            : rule.keywords.filter((k) => !kw.includes(k))
+            : rule.keywords.filter((k: string) => !kw.includes(k))
         }
 
         else if (target === 'bundle') {
@@ -297,7 +297,7 @@ export function createCatalogHandler(opts: {
 
           group.keywords = action === 'add'
             ? unique([...group.keywords, ...kw])
-            : group.keywords.filter((k) => !kw.includes(k))
+            : group.keywords.filter((k: string) => !kw.includes(k))
         }
 
         // rebuild catalog ด้วย config ใหม่
