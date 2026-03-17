@@ -703,28 +703,30 @@ echo -e "${GREEN}📝 Creating restore script...${NC}"
 cat > scripts/restore.sh << 'EOF'
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "❌ Usage: ./restore.sh <backup-file>"
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "❌ Usage: ./restore.sh <volume-name> <backup-file>"
+  echo "   Volumes: open-webui-data, ollama-data"
   exit 1
 fi
 
-BACKUP_FILE="$1"
+VOLUME_NAME="$1"
+BACKUP_FILE="$2"
 
 if [ ! -f "$BACKUP_FILE" ]; then
   echo "❌ Backup file not found: $BACKUP_FILE"
   exit 1
 fi
 
-echo "🔄 Restoring from: $BACKUP_FILE"
+echo "🔄 Restoring $VOLUME_NAME from: $BACKUP_FILE"
 
 # Stop services
 docker-compose down
 
-# Remove only the Open WebUI volume being restored
-docker volume rm open-webui-data
+# Remove old volume
+docker volume rm "$VOLUME_NAME" 2>/dev/null || true
 
 # Restore
-docker run --rm -v open-webui-data:/data -v "$(pwd)":/backup \
+docker run --rm -v "$VOLUME_NAME":/data -v "$(pwd)":/backup \
   alpine tar xzf "/backup/$BACKUP_FILE" -C /data
 
 # Start services
