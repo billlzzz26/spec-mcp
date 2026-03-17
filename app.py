@@ -568,7 +568,9 @@ raise error_response("Missing X-User-Id header", status_code=400)
 
 _check_rate_limit(user_id, "update_config")  
   
-new_config = body.dict(exclude_unset=True)  
+new_config = body.dict(exclude_unset=True)
+existing_config = terminal_config_store.get(user_id, {})
+merged_config = {**existing_config, **new_config}
   
 # ตรวจสอบ cloud_storage ถ้ามี  
 if "cloud_storage" in new_config:  
@@ -580,7 +582,7 @@ if "cloud_storage" in new_config:
         raise error_response("provider must be 'r2' or 'minio'")  
   
 # เก็บ config  
-terminal_config_store[user_id] = new_config  
+terminal_config_store[user_id] = merged_config  
 logger.info(f"Config updated for user {user_id}")  
   
 return success_response({"message": "Config updated"})
