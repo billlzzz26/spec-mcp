@@ -1,9 +1,11 @@
 /* 
  * ไฟล์ CSS หลักของโปรเจกต์ - ใช้ Tailwind CSS v4
- * ใช้ @import "tailwindcss" พร้อม source() เพื่อจำกัดขอบเขตการ scan ไฟล์
- * ให้อยู่ภายใน src/ เท่านั้น ป้องกันการอ่านไฟล์จากภายนอกโปรเจกต์
+ * ใช้ source(none) เพื่อปิดการ auto-detect แล้วระบุ @source เอง
+ * ป้องกัน Tailwind scan ไฟล์นอกโปรเจกต์ (เช่น v0 sandbox)
  */
-@import "tailwindcss" source("./");
+@import "tailwindcss" source(none);
+@source "../src/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
 
 /*
  * @theme inline - กำหนดค่าสี, radius, และ animation 
