@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 try {
   console.log('Regenerating package-lock.json...');
   execSync('npm install --package-lock-only', {
-    cwd: '/vercel/share/v0-project',
+    cwd: new URL('..', import.meta.url),
     stdio: 'inherit'
   });
   console.log('Lock file regenerated successfully');
