@@ -1,5 +1,15 @@
-@import "tailwindcss";
+/* 
+ * ไฟล์ CSS หลักของโปรเจกต์ - ใช้ Tailwind CSS v4
+ * ใช้ @import "tailwindcss" พร้อม source() เพื่อจำกัดขอบเขตการ scan ไฟล์
+ * ให้อยู่ภายใน src/ เท่านั้น ป้องกันการอ่านไฟล์จากภายนอกโปรเจกต์
+ */
+@import "tailwindcss" source("./");
 
+/*
+ * @theme inline - กำหนดค่าสี, radius, และ animation 
+ * ผ่าน CSS custom properties ตามรูปแบบ Tailwind v4
+ * ค่าที่กำหนดที่นี่จะถูกใช้เป็น utility classes เช่น bg-background, text-foreground
+ */
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -38,6 +48,10 @@
   }
 }
 
+/*
+ * CSS Variables สำหรับ Dark theme (เป็นค่าเริ่มต้น)
+ * ใช้รูปแบบ HSL เพื่อให้ปรับแต่ง opacity ได้ง่าย
+ */
 :root {
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
@@ -61,6 +75,10 @@
   --radius: 0.5rem;
 }
 
+/*
+ * Global base styles - ใช้ plain CSS แทน @apply
+ * เพราะ Tailwind v4 ไม่รองรับ @apply ใน base layer สำหรับ custom utility classes
+ */
 * {
   border-color: hsl(var(--border));
 }
@@ -89,16 +107,4 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-@utility text-gradient {
-  @apply bg-clip-text text-transparent;
-}
-
-@utility transition-smooth {
-  @apply transition-all duration-200 ease-out;
-}
-
-@utility hover-lift {
-  @apply transition-transform duration-200 hover:-translate-y-0.5;
 }
