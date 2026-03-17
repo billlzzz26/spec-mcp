@@ -269,14 +269,26 @@ export default defineConfig({
 })
 EOF
 
-echo -e "${GREEN}🔧 Updating tsconfig.json...${NC}"
+echo -e "${GREEN}🔧 Updating tsconfig files...${NC}"
 node -e "
 const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'));
-config.compilerOptions = config.compilerOptions || {};
-config.compilerOptions.baseUrl = '.';
-config.compilerOptions.paths = { '@/*': ['./src/*'] };
-fs.writeFileSync('tsconfig.json', JSON.stringify(config, null, 2));
+const rootConfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'));
+rootConfig.compilerOptions = rootConfig.compilerOptions || {};
+rootConfig.compilerOptions.baseUrl = '.';
+rootConfig.compilerOptions.paths = { '@/*': ['./src/*'] };
+fs.writeFileSync('tsconfig.json', JSON.stringify(rootConfig, null, 2));
+"
+node -e "
+const fs = require('fs');
+const path = 'tsconfig.app.json';
+const content = fs.readFileSync(path, 'utf8');
+const lines = content.split('\n').filter(line => !line.trim().startsWith('//'));
+const jsonContent = lines.join('\n');
+const appConfig = JSON.parse(jsonContent.replace(/\/\*[\s\S]*?\*\//g, '').replace(/,(\s*[}\]])/g, '\$1'));
+appConfig.compilerOptions = appConfig.compilerOptions || {};
+appConfig.compilerOptions.baseUrl = '.';
+appConfig.compilerOptions.paths = { '@/*': ['./src/*'] };
+fs.writeFileSync(path, JSON.stringify(appConfig, null, 2));
 "
 
 echo -e "${GREEN}📝 Creating components.json...${NC}"
