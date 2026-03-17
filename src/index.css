@@ -4,7 +4,7 @@
  * ป้องกัน Tailwind scan ไฟล์นอกโปรเจกต์ (เช่น v0 sandbox)
  */
 @import "tailwindcss" source(none);
-@source "../src/**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx}";
 @source "../components/**/*.{ts,tsx}";
 
 /*
