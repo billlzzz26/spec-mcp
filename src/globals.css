@@ -3,11 +3,10 @@
  * ใช้ source(none) เพื่อปิดการ auto-detect แล้วระบุ @source เอง
  * ป้องกัน Tailwind scan ไฟล์นอกโปรเจกต์ (เช่น v0 sandbox)
  */
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 @source "./app/**/*.{ts,tsx}";
 @source "./components/**/*.{ts,tsx}";
 @source "./lib/**/*.{ts,tsx}";
-@source "../components/**/*.{ts,tsx}";
 
 /*
  * @theme inline - กำหนดค่าสี, radius, และ animation 
