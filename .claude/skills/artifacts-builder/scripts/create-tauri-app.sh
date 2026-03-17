@@ -121,7 +121,7 @@ EOF
 echo -e "${GREEN}⚙️  Creating Tailwind config...${NC}"
 cat > tailwind.config.js << 'EOF'
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   darkMode: ['class'],
   content: [
     './index.html',
