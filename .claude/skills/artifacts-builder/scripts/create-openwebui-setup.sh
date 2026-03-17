@@ -720,8 +720,8 @@ echo "🔄 Restoring from: $BACKUP_FILE"
 # Stop services
 docker-compose down
 
-# Remove old volumes
-docker volume rm open-webui-data ollama-data
+# Remove only the Open WebUI volume being restored
+docker volume rm open-webui-data
 
 # Restore
 docker run --rm -v open-webui-data:/data -v "$(pwd)":/backup \
