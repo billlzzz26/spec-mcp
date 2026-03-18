@@ -19,11 +19,12 @@
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Activity, RefreshCw, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "./MetricCard";
+import { healthCheck } from "@/lib/metric-api";
 import {
   getMetricWidgetData,
   METRIC_CONFIGS,
@@ -138,6 +139,30 @@ function useDashboardData() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function MetricDashboard() {
+  const [isMounted, setIsMounted] = useState(false);
+  const [backendHealthy, setBackendHealthy] = useState(false);
+
+  // ตรวจสอบ backend connection เมื่อ mount
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // ทดลองเชื่อมต่อ backend
+    healthCheck().then((result) => {
+      if (result.status === 'ok') {
+        setBackendHealthy(true);
+        console.log('[MetricDashboard] Backend connected');
+      } else {
+        console.warn('[MetricDashboard] Backend health check failed:', result.errors);
+      }
+    }).catch((error) => {
+      console.warn('[MetricDashboard] Backend connection error:', error);
+    });
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
   const {
     globalTimeRange,
@@ -236,6 +261,12 @@ export function MetricDashboard() {
         <div className="flex items-center gap-3 flex-wrap">
           <span className="text-xs text-muted-foreground">
             แสดง {DASHBOARD_METRICS.length} metrics
+            {backendHealthy && (
+              <span className="ml-2 text-emerald-400">✓ Backend เชื่อมต่อ</span>
+            )}
+            {!backendHealthy && (
+              <span className="ml-2 text-orange-400">⚠ Backend disconnected - ใช้ mock data</span>
+            )}
           </span>
           {/* Legend dots สำหรับแต่ละ metric */}
           {DASHBOARD_METRICS.map((type) => {
