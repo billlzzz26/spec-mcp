@@ -49,8 +49,25 @@ export type SkillsConfig = z.infer<typeof SkillsConfigSchema>
 
 // ─── Config Loader ────────────────────────────────────────────────────────────
 
+/**
+ * loadConfig — อ่านไฟล์ config จาก disk
+ * ถ้าไม่พบไฟล์จะใช้ค่า default แทนเพื่อป้องกัน build crash
+ */
 export function loadConfig(configPath: string): SkillsConfig {
-  const raw = fs.readFileSync(configPath, 'utf-8')
-  const parsed = JSON.parse(raw)
-  return SkillsConfigSchema.parse(parsed)
+  try {
+    const raw = fs.readFileSync(configPath, 'utf-8')
+    const parsed = JSON.parse(raw)
+    return SkillsConfigSchema.parse(parsed)
+  } catch {
+    // Fallback config — ใช้เมื่อ file ไม่มี (เช่น production build ที่ path ไม่ตรง)
+    return SkillsConfigSchema.parse({
+      version: '1.0.0',
+      indexing: {},
+      stopwords: { tokens: [] },
+      tagStopwords: { tokens: [] },
+      categories: { rules: [], fallback: 'general' },
+      bundles: { groups: {} },
+      curatedCommon: { skills: [] },
+    })
+  }
 }

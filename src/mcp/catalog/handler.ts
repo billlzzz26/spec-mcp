@@ -124,21 +124,38 @@ export function createCatalogHandler(opts: {
   skillsDir: string
   configPath: string
 }) {
-  // โหลด catalog ครั้งแรก — ใช้ loadConfig แบบ ESM แทน require()
+  // โหลด catalog ครั้งแรก — wrap ใน try-catch เพื่อป้องกัน build crash
   let state: CatalogState & { config: SkillsConfig; configPath: string; skillsDir: string } = (() => {
-    const result = buildCatalog({ skillsDir: opts.skillsDir, configPath: opts.configPath })
-    const config = loadConfig(opts.configPath)
-    return { ...result, config, configPath: opts.configPath, skillsDir: opts.skillsDir }
+    try {
+      const result = buildCatalog({ skillsDir: opts.skillsDir, configPath: opts.configPath })
+      const config = loadConfig(opts.configPath)
+      return { ...result, config, configPath: opts.configPath, skillsDir: opts.skillsDir }
+    } catch {
+      // Fallback state เมื่อ filesystem ไม่พร้อม (เช่น production build)
+      const config = loadConfig(opts.configPath)
+      return {
+        catalog: { generatedAt: new Date().toISOString(), total: 0, skills: [] },
+        aliases: {},
+        bundleData: { bundles: {}, common: [] },
+        config,
+        configPath: opts.configPath,
+        skillsDir: opts.skillsDir,
+      }
+    }
   })()
 
   function rebuild() {
-    // เขียน config ที่อัปเดตแล้วกลับลงไฟล์
-    fs.writeFileSync(state.configPath, JSON.stringify(state.config, null, 2))
-    const result = buildCatalog({
-      skillsDir: state.skillsDir,
-      configPath: state.configPath,
-    })
-    state = { ...state, ...result }
+    try {
+      // เขียน config ที่อัปเดตแล้วกลับลงไฟล์
+      fs.writeFileSync(state.configPath, JSON.stringify(state.config, null, 2))
+      const result = buildCatalog({
+        skillsDir: state.skillsDir,
+        configPath: state.configPath,
+      })
+      state = { ...state, ...result }
+    } catch {
+      // ข้ามการ rebuild ถ้า filesystem ไม่พร้อม (read-only หรือ serverless)
+    }
   }
 
   return function handleCatalogTool(
