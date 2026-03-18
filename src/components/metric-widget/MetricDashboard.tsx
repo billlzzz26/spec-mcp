@@ -24,7 +24,6 @@ import { Activity, RefreshCw, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "./MetricCard";
-import { healthCheck } from "@/lib/metric-api";
 import {
   getMetricWidgetData,
   METRIC_CONFIGS,
@@ -139,13 +138,12 @@ function useDashboardData() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function MetricDashboard() {
-  // ─── All hooks MUST be called here, BEFORE any return ───────────────────
-  // หา hooks ทั้งหมดก่อน early return เพื่อป้องกัน hooks violation
-  const [isMounted, setIsMounted] = useState(false);
+  // ✅ หากป้องกัน hydration mismatch โดยใช้ dynamic import กับ ssr: false
+  // ใน Next.js app router ใช้ 'use client' ที่บรรทัดต้นไฟล์ (already done)
+  // แล้วเรนเดอร์ component ทั้งหมดเสมอ (ไม่มี early return before hooks)
+  
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
-  const [backendHealthy, setBackendHealthy] = useState(false);
 
-  // ✅ useDashboardData() ต้องอยู่ที่นี่ ก่อน if (!isMounted) return
   const {
     globalTimeRange,
     setGlobalTimeRange,
@@ -155,27 +153,6 @@ export function MetricDashboard() {
     handleRefreshAll,
     loadingCards,
   } = useDashboardData();
-
-  // ตรวจสอบ backend connection เมื่อ mount
-  useEffect(() => {
-    setIsMounted(true);
-    
-    healthCheck().then((result) => {
-      if (result.status === 'ok') {
-        setBackendHealthy(true);
-        console.log('[MetricDashboard] Backend connected');
-      } else {
-        console.warn('[MetricDashboard] Backend health check failed:', result.errors);
-      }
-    }).catch((error) => {
-      console.warn('[MetricDashboard] Backend connection error:', error);
-    });
-  }, []);
-
-  // ป้องกัน hydration mismatch — ไม่ render ก่อนที่ client hydrated
-  if (!isMounted) {
-    return null;
-  }
 
   const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
     { value: "1h",  label: "1 ชม." },
@@ -263,13 +240,7 @@ export function MetricDashboard() {
         {/* ─── Summary Bar ───────────────────────────────────────────────── */}
         <div className="flex items-center gap-3 flex-wrap">
           <span className="text-xs text-muted-foreground">
-            แสดง {DASHBOARD_METRICS.length} metrics
-            {backendHealthy && (
-              <span className="ml-2 text-emerald-400">✓ Backend เชื่อมต่อ</span>
-            )}
-            {!backendHealthy && (
-              <span className="ml-2 text-orange-400">⚠ Backend disconnected - ใช้ mock data</span>
-            )}
+            แสดง {DASHBOARD_METRICS.length} metrics — Dashboard using seeded mock data for demo
           </span>
           {/* Legend dots สำหรับแต่ละ metric */}
           {DASHBOARD_METRICS.map((type) => {
