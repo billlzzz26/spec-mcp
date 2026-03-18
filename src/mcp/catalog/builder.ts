@@ -6,8 +6,8 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { loadConfig } from './config/index.js'
-import type { SkillsConfig } from './config/index.js'
+import { loadConfig } from './config/index'
+import type { SkillsConfig } from './config/index'
 import type {
   RawSkill,
   CatalogSkill,

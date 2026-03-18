@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
-import { server as baseServer } from "@/mcp/server/index.js";
-import { createCatalogHandler, catalogTools } from "@/mcp/catalog/handler.js";
+import { server as baseServer } from "@/mcp/server";
+import { createCatalogHandler, catalogTools } from "@/mcp/catalog/handler";
 
 // Resolve base URL — ใช้ environment variables เพื่อหา base URL (production, ngrok, local)
 function getBaseUrl(): string {

@@ -7,7 +7,7 @@
  *   import { searchSkillsTool, indexSkillTool, createCollectionTool, healthCheckTool } from '@/mcp/server/tools'
  */
 
-export { searchSkillsTool } from './search.js'
-export { indexSkillTool } from './index_skill.js'
-export { createCollectionTool } from './create-collection.js'
-export { healthCheckTool } from './health-check.js'
+export { searchSkillsTool } from './search'
+export { indexSkillTool } from './index_skill'
+export { createCollectionTool } from './create-collection'
+export { healthCheckTool } from './health-check'

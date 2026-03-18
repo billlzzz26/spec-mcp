@@ -2,10 +2,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 // Import tool definitions จาก modular tools
-import { searchSkillsTool } from "./tools/search.js";
-import { indexSkillTool } from "./tools/index_skill.js";
-import { createCollectionTool } from "./tools/create-collection.js";
-import { healthCheckTool } from "./tools/health-check.js";
+import { searchSkillsTool } from "./tools/search";
+import { indexSkillTool } from "./tools/index_skill";
+import { createCollectionTool } from "./tools/create-collection";
+import { healthCheckTool } from "./tools/health-check";
 
 // Create MCP server instance
 export const server = new McpServer({

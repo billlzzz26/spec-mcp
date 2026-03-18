@@ -10,10 +10,10 @@ import {
   unique,
   truncate,
   buildCatalog,
-} from './builder.js'
-import { loadConfig } from './config/index.js'
-import type { SkillsConfig } from './config/index.js'
-import type { CatalogState } from './types.js'
+} from './builder'
+import { loadConfig } from './config/index'
+import type { SkillsConfig } from './config/index'
+import type { CatalogState } from './types'
 
 // ─── MCP Tool Definitions ─────────────────────────────────────────────────────
 
