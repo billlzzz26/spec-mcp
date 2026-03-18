@@ -141,20 +141,64 @@ export const METRIC_CONFIGS: Record<MetricType, MetricConfig> = {
 // ─── Data Generation ──────────────────────────────────────────────────────────
 
 /**
+ * Seeded random number generator — ต้องใช้ seed เดียวกันแล้วจึงได้ค่าเดียวกัน
+ * เพื่อแก้ hydration mismatch เมื่อ SSR render ข้อมูลต่างจาก client
+ *
+ * Xorshift32 — lightweight PRNG ที่ stable และเร็ว
+ * @param seed  ตัวเลขเริ่มต้น (เช่น hash ของ metricType + timeRange)
+ */
+function seededRandom(seed: number): () => number {
+  let s = seed;
+  return function random() {
+    s ^= s << 13;
+    s ^= s >> 17;
+    s ^= s << 5;
+    // แปลง int32 เป็น float [0, 1)
+    return Math.abs(s % 1000000) / 1000000;
+  };
+}
+
+/**
+ * computeSeed — คำนวณ seed จาก metricType + timeRange
+ * ทำให้ data ของ metric "Success rate" กับ "24h" เป็นค่าเดียวกันเสมอ
+ */
+function computeSeed(metricType: string, timeRange: string): number {
+  let hash = 0;
+  const str = `${metricType}-${timeRange}`;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // convert to 32-bit integer
+  }
+  return Math.abs(hash) || 42; // ถ้า hash = 0 ให้ใช้ 42 เป็น fallback
+}
+
+/**
  * สร้าง mock time series data จำนวน n จุด
  * ใช้ seeded randomness เพื่อให้ข้อมูล stable ไม่เปลี่ยนทุก render
  *
  * @param base  ค่าเริ่มต้น
  * @param variance  ± ช่วงที่ค่าจะแกว่ง (เป็น fraction เช่น 0.2 = ±20%)
  * @param n  จำนวนจุดข้อมูล
+ * @param metricType  ประเภท metric (สำหรับ seeding)
+ * @param timeRange  ช่วงเวลา (สำหรับ seeding)
  */
-function generateTimeSeries(base: number, variance: number, n: number): number[] {
+function generateTimeSeries(
+  base: number,
+  variance: number,
+  n: number,
+  metricType: string,
+  timeRange: string,
+): number[] {
+  const seed = computeSeed(metricType, timeRange);
+  const random = seededRandom(seed);
+
   const values: number[] = [];
   let current = base;
   for (let i = 0; i < n; i++) {
     // Random walk แบบง่าย: เดินไปเรื่อย ๆ แต่ดึงกลับหา base
     const drift = (base - current) * 0.1;
-    const noise = (Math.random() - 0.5) * 2 * variance * base;
+    const noise = (random() - 0.5) * 2 * variance * base;
     current = Math.max(0, current + drift + noise);
     values.push(Math.round(current * 100) / 100);
   }
@@ -258,10 +302,16 @@ export function getMetricWidgetData(
   const base = baseValues[metricType];
   const nPoints = timeRange === "1h" ? 20 : timeRange === "24h" ? 24 : timeRange === "7d" ? 7 : 30;
 
-  // สร้างข้อมูล time series สำหรับช่วงปัจจุบัน
-  const currentSeries = generateTimeSeries(base, 0.15, nPoints);
-  // สร้างข้อมูล time series สำหรับช่วงก่อนหน้า (เอาไว้เปรียบเทียบ)
-  const previousSeries = generateTimeSeries(base * 0.9, 0.15, nPoints);
+  // สร้างข้อมูล time series สำหรับช่วงปัจจุบัน — ส่ง metricType + timeRange สำหรับ seeding
+  const currentSeries = generateTimeSeries(base, 0.15, nPoints, metricType, timeRange);
+  // สร้างข้อมูล time series สำหรับช่วงก่อนหน้า — ใช้ seed อื่น "prev-" + type เพื่อให้ต่างจากปัจจุบัน
+  const previousSeries = generateTimeSeries(
+    base * 0.9,
+    0.15,
+    nPoints,
+    `prev-${metricType}`,
+    timeRange,
+  );
   const labels = generateLabels(timeRange, nPoints);
 
   // รวม series เข้าเป็น DataPoint array
