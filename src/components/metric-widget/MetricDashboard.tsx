@@ -139,14 +139,27 @@ function useDashboardData() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function MetricDashboard() {
+  // ─── All hooks MUST be called here, BEFORE any return ───────────────────
+  // หา hooks ทั้งหมดก่อน early return เพื่อป้องกัน hooks violation
   const [isMounted, setIsMounted] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
   const [backendHealthy, setBackendHealthy] = useState(false);
+
+  // ✅ useDashboardData() ต้องอยู่ที่นี่ ก่อน if (!isMounted) return
+  const {
+    globalTimeRange,
+    setGlobalTimeRange,
+    getData,
+    handleCardTimeRange,
+    handleCardRefresh,
+    handleRefreshAll,
+    loadingCards,
+  } = useDashboardData();
 
   // ตรวจสอบ backend connection เมื่อ mount
   useEffect(() => {
     setIsMounted(true);
     
-    // ทดลองเชื่อมต่อ backend
     healthCheck().then((result) => {
       if (result.status === 'ok') {
         setBackendHealthy(true);
@@ -159,20 +172,10 @@ export function MetricDashboard() {
     });
   }, []);
 
+  // ป้องกัน hydration mismatch — ไม่ render ก่อนที่ client hydrated
   if (!isMounted) {
     return null;
   }
-
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
-  const {
-    globalTimeRange,
-    setGlobalTimeRange,
-    getData,
-    handleCardTimeRange,
-    handleCardRefresh,
-    handleRefreshAll,
-    loadingCards,
-  } = useDashboardData();
 
   const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
     { value: "1h",  label: "1 ชม." },
