@@ -11,6 +11,8 @@ import {
   truncate,
   buildCatalog,
 } from './builder.js'
+import { loadConfig } from './config/index.js'
+import type { SkillsConfig } from './config/index.js'
 import type { CatalogState } from './types.js'
 
 // ─── MCP Tool Definitions ─────────────────────────────────────────────────────
@@ -122,10 +124,9 @@ export function createCatalogHandler(opts: {
   skillsDir: string
   configPath: string
 }) {
-  // โหลด catalog ครั้งแรก
-  let state: CatalogState = (() => {
+  // โหลด catalog ครั้งแรก — ใช้ loadConfig แบบ ESM แทน require()
+  let state: CatalogState & { config: SkillsConfig; configPath: string; skillsDir: string } = (() => {
     const result = buildCatalog({ skillsDir: opts.skillsDir, configPath: opts.configPath })
-    const { loadConfig } = require('./config/index.js')
     const config = loadConfig(opts.configPath)
     return { ...result, config, configPath: opts.configPath, skillsDir: opts.skillsDir }
   })()

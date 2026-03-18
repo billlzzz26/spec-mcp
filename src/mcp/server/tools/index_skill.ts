@@ -8,6 +8,6 @@
  */
 
 export { searchSkillsTool } from './search.js'
-export { indexSkillTool } from './index_skill.js'
+export { indexSkillTool } from './index.js'
 export { createCollectionTool } from './create-collection.js'
 export { healthCheckTool } from './health-check.js'
