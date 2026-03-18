@@ -52,30 +52,63 @@
 }
 
 /*
- * CSS Variables สำหรับ Dark theme (เป็นค่าเริ่มต้น)
+ * CSS Variables สำหรับ Dark theme — Vercel Observability-inspired
+ *
+ * Color Palette (3 สีหลัก + 2 neutral):
+ *   Primary:   #3b82f6  (Blue 500) — brand, interactive elements
+ *   Accent:    #10b981  (Emerald 500) — positive trend, success
+ *   Danger:    #ef4444  (Red 500) — error, negative trend
+ *   Neutral 1: #0a0f1e  (Deep Navy) — background
+ *   Neutral 2: #111827  (Gray 900) — card surface
+ *
  * ใช้รูปแบบ HSL เพื่อให้ปรับแต่ง opacity ได้ง่าย
+ * เช่น hsl(var(--primary) / 0.1) = primary ที่ opacity 10%
  */
 :root {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
+  /* พื้นหลังหลัก: deep navy ใกล้ #050a12 */
+  --background: 222 47% 4%;
+  --foreground: 210 40% 96%;
+
+  /* Card surface: เข้มกว่า background เล็กน้อย */
+  --card: 220 40% 6%;
+  --card-foreground: 210 40% 96%;
+
+  --popover: 220 40% 6%;
+  --popover-foreground: 210 40% 96%;
+
+  /* Primary: Blue 500 */
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+
+  /* Secondary: เป็น surface สีเข้มสำหรับ button/chip */
+  --secondary: 215 28% 13%;
+  --secondary-foreground: 210 40% 85%;
+
+  /* Muted: สำหรับ placeholder, label รอง */
+  --muted: 215 28% 13%;
+  --muted-foreground: 215 20% 50%;
+
+  /* Accent: Emerald ใช้สำหรับ positive state */
+  --accent: 160 84% 39%;
   --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
+
+  /* Destructive: Red สำหรับ error */
+  --destructive: 0 72% 51%;
   --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 48%;
-  --radius: 0.5rem;
+
+  /* Border: เส้นบาง ๆ บน dark background */
+  --border: 215 25% 12%;
+  --input: 215 25% 12%;
+  --ring: 217 91% 60%;
+
+  --radius: 0.625rem;
+
+  /* Chart colors (hex โดยตรง — Recharts ต้องการ hex) */
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ef4444;
 }
 
 /*
