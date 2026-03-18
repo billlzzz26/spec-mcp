@@ -15,7 +15,7 @@ import type {
   BundleData,
   BuildCatalogOptions,
   CatalogResult,
-} from './types.js'
+} from './types'
 
 // ─── Core Utilities ───────────────────────────────────────────────────────────
 

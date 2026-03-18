@@ -18,8 +18,8 @@
 import { randomUUID } from 'node:crypto'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import { eq } from 'drizzle-orm'
-import { skillInvocationLogs, assertionResults } from './schema.js'
-import type { NewSkillInvocationLog, NewAssertionResult } from './schema.js'
+import { skillInvocationLogs, assertionResults } from './schema'
+import type { NewSkillInvocationLog, NewAssertionResult } from './schema'
 
 // ─── Hook Payloads ────────────────────────────────────────────────────────────
 

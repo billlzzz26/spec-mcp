@@ -11,10 +11,18 @@
  */
 
 export { buildCatalog } from './builder'
-export type { CatalogSkill, Catalog, BundleData, CatalogResult } from './builder'
+
+export type {
+  RawSkill,
+  CatalogSkill,
+  Catalog,
+  BundleData,
+  BuildCatalogOptions,
+  CatalogResult,
+  CatalogState,
+} from './types'
 
 export { createCatalogHandler, catalogTools } from './handler'
-export type { CatalogState } from './types'
 
 export { loadConfig } from './config/index'
 export type { SkillsConfig } from './config/index'
