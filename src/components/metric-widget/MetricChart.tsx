@@ -156,7 +156,7 @@ export function MetricChart({
 
   return (
     <ChartContainer config={chartConfig} className="w-full" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={50}>
         <AreaChart
           data={data}
           margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
