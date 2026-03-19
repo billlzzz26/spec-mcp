@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "indexing": {
+    "maxTriggers": 12,
+    "minTokenLength": 2,
+    "aliasMinLength": 28,
+    "aliasMinTokens": 4
+  },
+  "stopwords": {
+    "tokens": ["the", "a", "an", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did", "will", "would", "could", "should", "may", "might", "shall", "can", "need", "dare", "ought", "used", "to", "of", "in", "for", "on", "with", "at", "by", "from", "as", "into", "through", "during", "before", "after", "above", "below", "between", "out", "off", "over", "under", "again", "further", "then", "once"]
+  },
+  "tagStopwords": {
+    "tokens": ["skill", "tool", "plugin", "service", "api", "function"]
+  },
+  "categories": {
+    "rules": [
+      {
+        "name": "development",
+        "description": "Software development and coding tools",
+        "keywords": ["code", "build", "compile", "debug", "test", "deploy", "git", "npm", "typescript", "javascript", "python", "react", "node"]
+      },
+      {
+        "name": "data",
+        "description": "Data processing and analysis",
+        "keywords": ["data", "database", "sql", "query", "analytics", "csv", "json", "parse", "transform", "etl"]
+      },
+      {
+        "name": "ai",
+        "description": "AI and machine learning tools",
+        "keywords": ["ai", "ml", "model", "embedding", "vector", "llm", "prompt", "generate", "predict", "train"]
+      },
+      {
+        "name": "communication",
+        "description": "Communication and messaging tools",
+        "keywords": ["email", "message", "chat", "notify", "alert", "slack", "webhook", "send"]
+      },
+      {
+        "name": "infrastructure",
+        "description": "Infrastructure and DevOps tools",
+        "keywords": ["server", "cloud", "docker", "kubernetes", "aws", "vercel", "deploy", "monitor", "log", "ci", "cd"]
+      }
+    ],
+    "fallback": "general"
+  },
+  "bundles": {
+    "groups": {
+      "starter": {
+        "description": "Essential skills for getting started",
+        "keywords": ["basic", "starter", "essential", "core", "fundamental"]
+      },
+      "web-dev": {
+        "description": "Web development skill bundle",
+        "keywords": ["web", "frontend", "backend", "fullstack", "html", "css", "react", "next"]
+      },
+      "data-science": {
+        "description": "Data science and analytics bundle",
+        "keywords": ["data", "analysis", "visualization", "statistics", "pandas", "numpy"]
+      }
+    }
+  },
+  "curatedCommon": {
+    "skills": ["search_skills", "index_skill", "health_check"]
+  }
+}

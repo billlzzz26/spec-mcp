@@ -20,9 +20,9 @@
 
 import { eq, desc, gte, lte, and, sql, count, avg, sum } from 'drizzle-orm'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
-import { skillInvocationLogs, assertionResults } from './schema.js'
-import { createHookSystem } from './hooks.js'
-import type { ErrorType, AssertionInput } from './hooks.js'
+import { skillInvocationLogs, assertionResults } from './schema'
+import { createHookSystem } from './hooks'
+import type { ErrorType, AssertionInput } from './hooks'
 
 // ─── MCP Tool Definitions ─────────────────────────────────────────────────────
 
@@ -401,7 +401,7 @@ export function createMetricsHandler(db: PostgresJsDatabase<any>) {
   }
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────���─────────────────────────
 
 function buildTimeConditions(from?: string, to?: string) {
   const conditions = []

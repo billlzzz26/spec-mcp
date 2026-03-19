@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "Skill Service - AI-Powered Skill Discovery",
+  title: "Metric dashboard - Real-time skill analytics",
   description:
-    "Semantic search for AI agent skills powered by Voyage AI embeddings and Zilliz Cloud",
+    "Dashboard แสดง metric แบบ real-time สำหรับ skill invocations, success rate, latency และ token usage",
 };
 
 export default function RootLayout({
@@ -14,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

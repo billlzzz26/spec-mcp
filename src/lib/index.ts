@@ -5,7 +5,7 @@
  *
  * ใช้ใน MCP server:
  *
- *   import { metricsTools, createMetricsHandler } from './tracking/index.js'
+ *   import { metricsTools, createMetricsHandler } from './tracking/index'
  *
  *   const handler = createMetricsHandler(db)
  *
@@ -16,10 +16,10 @@
  *   }
  */
 
-export { metricsTools, createMetricsHandler } from './metrics.js'
-export { createHookSystem }                    from './hooks.js'
+export { metricsTools, createMetricsHandler } from './metrics'
+export { createHookSystem }                    from './hooks'
 export type { InvocationContext, ErrorType, PreInvocationPayload,
-              PostInvocationPayload, AssertionInput } from './hooks.js'
-export { skillInvocationLogs, assertionResults }     from './schema.js'
+              PostInvocationPayload, AssertionInput } from './hooks'
+export { skillInvocationLogs, assertionResults }     from './schema'
 export type { SkillInvocationLog, NewSkillInvocationLog,
-              AssertionResult }                       from './schema.js'
+              AssertionResult }                       from './schema'
