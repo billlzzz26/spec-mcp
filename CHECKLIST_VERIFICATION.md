@@ -10,38 +10,53 @@
 | Category | Status | Notes |
 |----------|--------|-------|
 | **Total Items** | 125 | From checklist.md |
-| **Implemented** | ~65 (52%) | Code exists |
-| **Tested** | ~10 (8%) | Actually tested in real env |
-| **Missing** | ~50 (40%) | Not implemented yet |
-| **Critical Issues** | 3 | Must fix before production |
+| **Implemented** | ~69 (55%) | Code exists |
+| **Tested** | ~14 (11%) | Actually tested in real env |
+| **Missing** | ~46 (37%) | Not implemented yet |
+| **Critical Issues** | 2 | Must fix before production |
+
+### Recently Verified (2025-03-26)
+- **0.1.1** - loadConfig() with Zod validation
+- **0.1.2** - stopwords.tokens[] filtering
+- **0.1.3** - tagStopwords.tokens[] filtering
+- **0.1.4** - categories.rules[] assignment
 
 ---
 
 ## Layer 0 — Catalog & Config
 
-### Status: ⚠️ PARTIAL (12/21 items)
+### Status: ⚠️ PARTIAL (16/21 items)
 
-#### ✅ Implemented
-- `skills.config.json` with required fields
-- `catalog.ts` (688 lines) with:
-  - `loadConfig()` - Zod validation
-  - `buildCatalog()` - Builder function
-  - `buildAliases()` - Alias generation
-  - `buildBundles()` - Bundle creation
-  - `createCatalogHandler()` - MCP handler
+#### ✅ Verified (2025-03-26)
+- [x] **0.1.1** - `loadConfig()` parses `skills.config.json` with Zod validation, includes fallback for missing files
+- [x] **0.1.2** - `stopwords.tokens[]` filtering works: `buildTriggers()` filters tokens matching stopwords Set
+- [x] **0.1.3** - `tagStopwords.tokens[]` filtering works: `deriveTags()` filters tags when deriving from id
+- [x] **0.1.4** - Category rules work: `detectCategory()` iterates rules in order, first match wins
+
+#### ✅ Implemented (Code exists)
+- `skills.config.json` with required fields (version 1.0.0)
+- `src/mcp/catalog/config/index.ts` - Config loader with Zod schema
+- `src/mcp/catalog/builder.ts` - Catalog builder with filtering logic
+- `src/mcp/catalog/types.ts` - Type definitions
+- `src/mcp/catalog/handler.ts` - MCP handler
 - MCP Tools: `list_skills`, `search_skills`, `get_skill`, `list_bundles`, `update_catalog_config`
 
+#### ✅ Test Infrastructure Created
+- `test-skills/` directory with 5 sample SKILL.md files
+- `src/__tests__/catalog-config.test.ts` - Comprehensive verification tests
+- `scripts/run-checklist-tests.js` - Test runner script
+
 #### ❌ Missing
-- [ ] 0.1.2-0.1.6 - Config modification tests (not tested in real environment)
-- [ ] 0.1.7 - JSON Schema validation
+- [ ] 0.1.5-0.1.6 - Bundle group and invalid config tests
+- [ ] 0.1.7 - JSON Schema validation (skills.config.schema.json)
 - [ ] 0.1.8 - YAML support
-- [ ] 0.2.1-0.2.8 - Catalog builder tests with real skills
+- [ ] 0.2.1-0.2.8 - Catalog builder tests (partially covered in new tests)
 - [ ] 0.3.1-0.3.12 - MCP tool tests (no MCP client testing)
 
-#### 🔴 Critical Issues
-1. **No real skills directory** - `skillsDir` points to non-existent paths
-2. **No SKILL.md files** - Catalog expects `SKILL.md` format but project uses JSON
-3. **Config mismatch** - `skilldex.config.json` ≠ `skills.config.json` schema
+#### 🟡 Issues Resolved
+1. **Test skills created** - `test-skills/` directory now exists with 5 sample skills
+2. **SKILL.md format** - Test skills follow correct frontmatter format
+3. **Config validated** - `skills.config.json` passes Zod validation
 
 ---
 

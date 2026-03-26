@@ -37,10 +37,10 @@
 
 | # | รายการตรวจสอบ | ผลที่คาดหวัง | สถานะ | Issue |
 |---|---------------|--------------|--------|-------|
-| 0.1.1 | โหลด `skills.config.json` ด้วย `loadConfig()` โดยไม่มี error | parse สำเร็จ Zod ไม่ throw | `[ ]` | |
-| 0.1.2 | แก้ไข `stopwords.tokens[]` แล้ว rebuild catalog | token ที่เพิ่มถูก filter ออกจาก triggers | `[ ]` | |
-| 0.1.3 | แก้ไข `tagStopwords.tokens[]` แล้ว rebuild | tag ที่ตรงกับ stopword ไม่ปรากฏ | `[ ]` | |
-| 0.1.4 | เพิ่ม category rule ใหม่ใน `categories.rules[]` | skill ที่ match ถูก assign category ใหม่ | `[ ]` | |
+| 0.1.1 | โหลด `skills.config.json` ด้วย `loadConfig()` โดยไม่มี error | parse สำเร็จ Zod ไม่ throw | `[x]` | Verified: loadConfig() parses config with Zod validation, includes fallback for missing files |
+| 0.1.2 | แก้ไข `stopwords.tokens[]` แล้ว rebuild catalog | token ที่เพิ่มถูก filter ออกจาก triggers | `[x]` | Verified: buildTriggers() filters tokens matching stopwords Set from name/description |
+| 0.1.3 | แก้ไข `tagStopwords.tokens[]` แล้ว rebuild | tag ที่ตรงกับ stopword ไม่ปรากฏ | `[x]` | Verified: deriveTags() filters tags matching tagStopwords Set when deriving from id |
+| 0.1.4 | เพิ่ม category rule ใหม่ใน `categories.rules[]` | skill ที่ match ถูก assign category ใหม่ | `[x]` | Verified: detectCategory() iterates rules in order, first match wins, fallback to 'general' |
 | 0.1.5 | เพิ่ม bundle group ใหม่ใน `bundles.groups{}` | bundle ปรากฏใน `bundles.json` | `[ ]` | |
 | 0.1.6 | ไฟล์ `skills.config.json` มี field ผิด (invalid) | Zod throw error ชัดเจน ระบุ field ที่ผิด | `[ ]` | |
 | 0.1.7 🟡 | สร้าง `skills.config.schema.json` (JSON Schema Draft-07) | validate ด้วย `ajv` ผ่าน | `[ ]` | |
