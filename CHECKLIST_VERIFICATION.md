@@ -22,7 +22,7 @@ updated: 2026-03-26
 | **Missing** | ~42 (34%) | Not implemented yet |
 | **Critical Issues** | 2 | Must fix before production |
 
-### Recently Verified (2025-03-26)
+### Recently Verified (2026-03-26)
 
 - **0.1.1** - loadConfig() with Zod validation
 - **0.1.2** - stopwords.tokens[] filtering
