@@ -282,7 +282,7 @@
 | R-01 | 🔴 | ไม่มี `drizzle.config.ts` — ไม่สามารถ run migration | สร้างไฟล์ config ระบุ DB URL, schema path | `[ ]` |
 | R-02 | 🔴 | MCP tools ไม่มี Zod validation บน input | เพิ่ม `z.parse()` ก่อน logic ทุก case | `[ ]` |
 | R-03 | 🔴 | `search_skills` MCP ยังใช้ keyword ไม่ใช่ vector | implement Layer 1 ก่อน production | `[ ]` |
-| R-04 | 🔴 | Layer 1 ยังไม่มี — rerank ในส���ปกยังไม่ได้ทำ | ทำ Modal single-file ก่อน | `[ ]` |
+| R-04 | 🔴 | Layer 1 ยังไม่มี — rerank ในสเปกยังไม่ได้ทำ | ทำ Modal single-file ก่อน | `[ ]` |
 | R-05 | 🟡 | `readSkill()` parse frontmatter ด้วย regex fragile | เปลี่ยนเป็น `gray-matter` | `[ ]` |
 | R-06 | 🟡 | `update_catalog_config` เขียนทับ config ทันที ไม่มี backup | เพิ่ม `.bak` ก่อน write | `[ ]` |
 | R-07 | 🟡 | Hook `withTracking()` ไม่มี timeout — skill ค้างไม่เปลี่ยน status | เพิ่ม TTL auto-fail | `[ ]` |
