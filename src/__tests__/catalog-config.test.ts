@@ -117,13 +117,12 @@ describe('0.1.2 — stopwords.tokens[] ควร filter token ออกจาก
     const config = loadConfig(TEST_CONFIG_PATH)
     const stopwords = new Set(config.stopwords.tokens)
 
-    // triggers ไม่ควรมี stopwords
-    for (const trigger of pythonSkill!.triggers) {
-      if (stopwords.has(trigger)) {
-        // ถ้า trigger เป็น tag ที่กำหนดโดยตรง อาจไม่ถูก filter
-        // แต่ถ้ามาจาก name/description ควรถูก filter
-        console.log(`[v0] Warning: trigger "${trigger}" is a stopword`)
-      }
+    // triggers ไม่ควรมี stopwords (ยกเว้นกรณีที่เป็น tags โดยตรง)
+    const triggersFromContent = pythonSkill!.triggers.filter(
+      (t) => !pythonSkill!.tags.includes(t)
+    )
+    for (const trigger of triggersFromContent) {
+      expect(stopwords.has(trigger)).toBe(false)
     }
 
     // triggers ควรมี "python" (ไม่อยู่ใน stopwords)
