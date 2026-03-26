@@ -18,7 +18,8 @@ console.log('Items: 0.1.1, 0.1.2, 0.1.3, 0.1.4')
 console.log('========================================\n')
 
 // รัน vitest กับไฟล์ทดสอบเฉพาะ
-const vitest = spawn('npx', [
+const vitest = spawn('pnpm', [
+  'exec',
   'vitest',
   'run',
   'src/__tests__/catalog-config.test.ts',
@@ -26,7 +27,7 @@ const vitest = spawn('npx', [
 ], {
   cwd: projectRoot,
   stdio: 'inherit',
-  shell: true
+  shell: false
 })
 
 vitest.on('close', (code, signal) => {
