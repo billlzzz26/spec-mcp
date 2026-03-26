@@ -29,8 +29,15 @@ const vitest = spawn('npx', [
   shell: true
 })
 
-vitest.on('close', (code) => {
+vitest.on('close', (code, signal) => {
   console.log('\n========================================')
+  if (code === null) {
+    console.log(`Tests terminated by signal ${signal}`)
+    console.log('Some tests may have failed.')
+    console.log('========================================')
+    process.exit(1)
+    return
+  }
   if (code === 0) {
     console.log('All tests PASSED!')
     console.log('Checklist items 0.1.1-0.1.4 verified.')
