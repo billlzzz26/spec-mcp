@@ -313,17 +313,20 @@ app.py                        ✅ (444 lines - Modal app)
 ## Recommendations
 
 ### Immediate Actions (This Week)
+
 1. **Deploy Modal** - `modal deploy app.py` ✅ **READY TO DEPLOY**
 2. **Test endpoints** - Verify all 4 HTTP endpoints work
 3. **Update TypeScript** - Point MCP tools to deployed Modal URLs
 4. **Integration test** - End-to-end test: index → search → results
 
 ### Short-term (This Month)
+
 1. **Database setup** - PostgreSQL + Drizzle for tracking
 2. **Hook system** - Implement invocation logging
 3. **Real testing** - Run checklist items in real environment
 
 ### Long-term (Next Quarter)
+
 1. **Full Layer 2** - Complete tracking system
 2. **Full Layer 3** - Complete evaluation system
 3. **Full Layer 4** - Complete analytics dashboard
