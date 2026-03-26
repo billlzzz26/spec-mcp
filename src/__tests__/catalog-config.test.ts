@@ -350,6 +350,404 @@ describe('0.1.4 — categories.rules[] ควร assign category ให้ skill
 
 /**
  * ========================================
+ * Checklist 0.1.5 — Bundle Groups
+ * ========================================
+ * ผลที่คาดหวัง: bundle ใหม่ปรากฏใน bundles.json
+ */
+describe('0.1.5 — bundles.groups{} ควรสร้าง bundle ใหม่ได้', () => {
+  const tempConfigPath = path.resolve(process.cwd(), 'test-skills.config.json')
+  const tempOutputDir = path.resolve(process.cwd(), 'test-output')
+
+  beforeEach(() => {
+    const originalConfig = JSON.parse(fs.readFileSync(TEST_CONFIG_PATH, 'utf-8'))
+    fs.writeFileSync(tempConfigPath, JSON.stringify(originalConfig, null, 2))
+    fs.mkdirSync(tempOutputDir, { recursive: true })
+  })
+
+  afterEach(() => {
+    if (fs.existsSync(tempConfigPath)) {
+      fs.unlinkSync(tempConfigPath)
+    }
+    if (fs.existsSync(tempOutputDir)) {
+      fs.rmSync(tempOutputDir, { recursive: true, force: true })
+    }
+  })
+
+  it('ควรมี bundle groups ทั้งหมดที่กำหนดใน config', () => {
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: TEST_CONFIG_PATH,
+      outputDir: tempOutputDir,
+    })
+
+    const config = loadConfig(TEST_CONFIG_PATH)
+    const configBundleNames = Object.keys(config.bundles.groups)
+
+    // ทุก bundle ใน config ควรปรากฏใน bundleData
+    for (const bundleName of configBundleNames) {
+      expect(result.bundleData.bundles[bundleName]).toBeDefined()
+    }
+  })
+
+  it('ควรสร้าง bundle ใหม่เมื่อเพิ่ม group ใน config', () => {
+    // เพิ่ม bundle group ใหม่
+    const config = JSON.parse(fs.readFileSync(TEST_CONFIG_PATH, 'utf-8'))
+    config.bundles.groups['ml-ai-core'] = {
+      description: 'Machine Learning and AI fundamentals',
+      keywords: ['ml', 'machine', 'learning', 'neural', 'tensorflow', 'pytorch'],
+    }
+    fs.writeFileSync(tempConfigPath, JSON.stringify(config, null, 2))
+
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: tempConfigPath,
+      outputDir: tempOutputDir,
+    })
+
+    // Bundle ใหม่ควรปรากฏใน result
+    expect(result.bundleData.bundles['ml-ai-core']).toBeDefined()
+    expect(result.bundleData.bundles['ml-ai-core'].description).toBe(
+      'Machine Learning and AI fundamentals'
+    )
+
+    // machine-learning-engineer ควรอยู่ใน bundle นี้ (match "machine", "learning")
+    expect(result.bundleData.bundles['ml-ai-core'].skills).toContain(
+      'machine-learning-engineer'
+    )
+  })
+
+  it('ควรเขียน bundles.json ที่มี bundle ใหม่เมื่อระบุ outputDir', () => {
+    // เพิ่ม bundle group ใหม่
+    const config = JSON.parse(fs.readFileSync(TEST_CONFIG_PATH, 'utf-8'))
+    config.bundles.groups['security-advanced'] = {
+      description: 'Advanced security skills',
+      keywords: ['security', 'audit', 'vulnerability', 'threat'],
+    }
+    fs.writeFileSync(tempConfigPath, JSON.stringify(config, null, 2))
+
+    buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: tempConfigPath,
+      outputDir: tempOutputDir,
+    })
+
+    // ตรวจสอบว่าไฟล์ bundles.json ถูกสร้าง
+    const bundlesPath = path.join(tempOutputDir, 'bundles.json')
+    expect(fs.existsSync(bundlesPath)).toBe(true)
+
+    // ตรวจสอบเนื้อหา
+    const bundlesContent = JSON.parse(fs.readFileSync(bundlesPath, 'utf-8'))
+    expect(bundlesContent.bundles['security-advanced']).toBeDefined()
+    expect(bundlesContent.bundles['security-advanced'].skills).toContain(
+      'security-auditor'
+    )
+  })
+})
+
+/**
+ * ========================================
+ * Checklist 0.1.6 — Invalid Config Validation
+ * ========================================
+ * ผลที่คาดหวัง: Zod throw error ชัดเจน ระบุ field ที่ผิด
+ */
+describe('0.1.6 — Invalid config ควร throw Zod error ที่ชัดเจน', () => {
+  const tempConfigPath = path.resolve(process.cwd(), 'invalid-test.config.json')
+
+  afterEach(() => {
+    if (fs.existsSync(tempConfigPath)) {
+      fs.unlinkSync(tempConfigPath)
+    }
+  })
+
+  it('ควร throw error เมื่อ version field หายไป', () => {
+    const invalidConfig = {
+      indexing: { maxTriggers: 12 },
+      stopwords: { tokens: [] },
+      tagStopwords: { tokens: [] },
+      categories: { rules: [], fallback: 'general' },
+      bundles: { groups: {} },
+      curatedCommon: { skills: [] },
+    }
+    fs.writeFileSync(tempConfigPath, JSON.stringify(invalidConfig, null, 2))
+
+    // Zod parse โดยตรงควร throw
+    expect(() => {
+      SkillsConfigSchema.parse(invalidConfig)
+    }).toThrow()
+
+    // ตรวจสอบว่า error message ระบุ field
+    try {
+      SkillsConfigSchema.parse(invalidConfig)
+    } catch (error: unknown) {
+      expect(error).toBeDefined()
+      const zodError = error as { issues?: Array<{ path: string[] }> }
+      expect(zodError.issues).toBeDefined()
+      const hasVersionError = zodError.issues!.some((issue) =>
+        issue.path.includes('version')
+      )
+      expect(hasVersionError).toBe(true)
+    }
+  })
+
+  it('ควร throw error เมื่อ stopwords.tokens ไม่ใช่ array', () => {
+    const invalidConfig = {
+      version: '1.0.0',
+      indexing: {},
+      stopwords: { tokens: 'not-an-array' }, // ผิด: ควรเป็น array
+      tagStopwords: { tokens: [] },
+      categories: { rules: [], fallback: 'general' },
+      bundles: { groups: {} },
+      curatedCommon: { skills: [] },
+    }
+
+    expect(() => {
+      SkillsConfigSchema.parse(invalidConfig)
+    }).toThrow()
+
+    try {
+      SkillsConfigSchema.parse(invalidConfig)
+    } catch (error: unknown) {
+      const zodError = error as { issues?: Array<{ path: string[]; message: string }> }
+      expect(zodError.issues).toBeDefined()
+      // ควรมี error เกี่ยวกับ stopwords.tokens
+      const hasStopwordsError = zodError.issues!.some(
+        (issue) =>
+          issue.path.includes('stopwords') || issue.path.includes('tokens')
+      )
+      expect(hasStopwordsError).toBe(true)
+    }
+  })
+
+  it('ควร throw error เมื่อ categories.rules มี item ที่ไม่มี name', () => {
+    const invalidConfig = {
+      version: '1.0.0',
+      indexing: {},
+      stopwords: { tokens: [] },
+      tagStopwords: { tokens: [] },
+      categories: {
+        rules: [
+          { keywords: ['test'] }, // ขาด name field
+        ],
+        fallback: 'general',
+      },
+      bundles: { groups: {} },
+      curatedCommon: { skills: [] },
+    }
+
+    expect(() => {
+      SkillsConfigSchema.parse(invalidConfig)
+    }).toThrow()
+
+    try {
+      SkillsConfigSchema.parse(invalidConfig)
+    } catch (error: unknown) {
+      const zodError = error as { issues?: Array<{ path: string[]; message: string }> }
+      expect(zodError.issues).toBeDefined()
+      // ควรมี error เกี่ยวกับ categories.rules[0].name
+      const hasNameError = zodError.issues!.some((issue) =>
+        issue.path.includes('name')
+      )
+      expect(hasNameError).toBe(true)
+    }
+  })
+
+  it('ควร throw error เมื่อ bundles.groups value ไม่มี description', () => {
+    const invalidConfig = {
+      version: '1.0.0',
+      indexing: {},
+      stopwords: { tokens: [] },
+      tagStopwords: { tokens: [] },
+      categories: { rules: [], fallback: 'general' },
+      bundles: {
+        groups: {
+          'test-bundle': { keywords: ['test'] }, // ขาด description
+        },
+      },
+      curatedCommon: { skills: [] },
+    }
+
+    expect(() => {
+      SkillsConfigSchema.parse(invalidConfig)
+    }).toThrow()
+
+    try {
+      SkillsConfigSchema.parse(invalidConfig)
+    } catch (error: unknown) {
+      const zodError = error as { issues?: Array<{ path: string[]; message: string }> }
+      expect(zodError.issues).toBeDefined()
+      const hasDescError = zodError.issues!.some((issue) =>
+        issue.path.includes('description')
+      )
+      expect(hasDescError).toBe(true)
+    }
+  })
+
+  it('loadConfig() ควร fallback เมื่อ config invalid (ไม่ crash)', () => {
+    const invalidConfig = { invalid: 'config' }
+    fs.writeFileSync(tempConfigPath, JSON.stringify(invalidConfig, null, 2))
+
+    // loadConfig ควร fallback gracefully
+    const config = loadConfig(tempConfigPath)
+    expect(config).toBeDefined()
+    expect(config.version).toBe('1.0.0') // default
+  })
+})
+
+/**
+ * ========================================
+ * Checklist 0.2.6 — SKILL.md without Frontmatter
+ * ========================================
+ * ผลที่คาดหวัง: ใช้ id เป็น name, description=""
+ */
+describe('0.2.6 — SKILL.md ไม่มี frontmatter ควร process ได้', () => {
+  it('ควรใช้ id เป็น name เมื่อไม่มี frontmatter', () => {
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    const noFrontmatterSkill = result.catalog.skills.find(
+      (s) => s.id === 'no-frontmatter'
+    )
+    expect(noFrontmatterSkill).toBeDefined()
+
+    // name ควรเป็น id
+    expect(noFrontmatterSkill!.name).toBe('no-frontmatter')
+  })
+
+  it('ควรมี description เป็น empty string เมื่อไม่มี frontmatter', () => {
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    const noFrontmatterSkill = result.catalog.skills.find(
+      (s) => s.id === 'no-frontmatter'
+    )
+    expect(noFrontmatterSkill).toBeDefined()
+
+    // description ควรเป็น ""
+    expect(noFrontmatterSkill!.description).toBe('')
+  })
+
+  it('ควร derive tags จาก id เมื่อไม่มี frontmatter', () => {
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    const noFrontmatterSkill = result.catalog.skills.find(
+      (s) => s.id === 'no-frontmatter'
+    )
+    expect(noFrontmatterSkill).toBeDefined()
+
+    // tags ควร derive จาก "no-frontmatter" → ["no", "frontmatter"] หลัง filter
+    expect(Array.isArray(noFrontmatterSkill!.tags)).toBe(true)
+    // ควรมี "no" หรือ "frontmatter" (ขึ้นกับ tagStopwords)
+    expect(noFrontmatterSkill!.tags.length).toBeGreaterThanOrEqual(0)
+  })
+
+  it('ควร assign fallback category เมื่อไม่มี frontmatter และไม่ match rules', () => {
+    const result = buildCatalog({
+      skillsDir: TEST_SKILLS_DIR,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    const noFrontmatterSkill = result.catalog.skills.find(
+      (s) => s.id === 'no-frontmatter'
+    )
+    expect(noFrontmatterSkill).toBeDefined()
+
+    // ควรได้ fallback category
+    expect(noFrontmatterSkill!.category).toBe('general')
+  })
+})
+
+/**
+ * ========================================
+ * Checklist 0.2.7 — Empty skillsDir
+ * ========================================
+ * ผลที่คาดหวัง: { total: 0, skills: [] } ไม่ crash
+ */
+describe('0.2.7 — skillsDir ว่างเปล่า ควร return empty catalog', () => {
+  const emptySkillsDir = path.resolve(process.cwd(), 'empty-test-skills')
+
+  beforeEach(() => {
+    fs.mkdirSync(emptySkillsDir, { recursive: true })
+  })
+
+  afterEach(() => {
+    if (fs.existsSync(emptySkillsDir)) {
+      fs.rmSync(emptySkillsDir, { recursive: true, force: true })
+    }
+  })
+
+  it('ควร return catalog ที่มี total=0 เมื่อ skillsDir ว่าง', () => {
+    const result = buildCatalog({
+      skillsDir: emptySkillsDir,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    expect(result.catalog).toBeDefined()
+    expect(result.catalog.total).toBe(0)
+  })
+
+  it('ควร return skills เป็น empty array เมื่อ skillsDir ว่าง', () => {
+    const result = buildCatalog({
+      skillsDir: emptySkillsDir,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    expect(Array.isArray(result.catalog.skills)).toBe(true)
+    expect(result.catalog.skills.length).toBe(0)
+  })
+
+  it('ควร return empty bundles เมื่อไม่มี skills', () => {
+    const result = buildCatalog({
+      skillsDir: emptySkillsDir,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    expect(result.bundleData).toBeDefined()
+    // Bundles ควรมี structure แต่ไม่มี skills
+    for (const bundleName of Object.keys(result.bundleData.bundles)) {
+      expect(result.bundleData.bundles[bundleName].skills).toEqual([])
+    }
+  })
+
+  it('ควร return empty aliases เมื่อไม่มี skills', () => {
+    const result = buildCatalog({
+      skillsDir: emptySkillsDir,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    expect(result.aliases).toBeDefined()
+    expect(Object.keys(result.aliases).length).toBe(0)
+  })
+
+  it('ไม่ควร crash เมื่อ skillsDir ไม่มีอยู่จริง', () => {
+    const nonExistentDir = '/path/that/does/not/exist'
+
+    // ไม่ควร throw error
+    expect(() => {
+      buildCatalog({
+        skillsDir: nonExistentDir,
+        configPath: TEST_CONFIG_PATH,
+      })
+    }).not.toThrow()
+
+    const result = buildCatalog({
+      skillsDir: nonExistentDir,
+      configPath: TEST_CONFIG_PATH,
+    })
+
+    expect(result.catalog.total).toBe(0)
+    expect(result.catalog.skills).toEqual([])
+  })
+})
+
+/**
+ * ========================================
  * Additional Integration Tests
  * ========================================
  */

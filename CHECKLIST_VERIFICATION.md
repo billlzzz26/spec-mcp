@@ -10,9 +10,9 @@
 | Category | Status | Notes |
 |----------|--------|-------|
 | **Total Items** | 125 | From checklist.md |
-| **Implemented** | ~69 (55%) | Code exists |
-| **Tested** | ~14 (11%) | Actually tested in real env |
-| **Missing** | ~46 (37%) | Not implemented yet |
+| **Implemented** | ~73 (58%) | Code exists |
+| **Tested** | ~18 (14%) | Actually tested in real env |
+| **Missing** | ~42 (34%) | Not implemented yet |
 | **Critical Issues** | 2 | Must fix before production |
 
 ### Recently Verified (2025-03-26)
@@ -20,18 +20,26 @@
 - **0.1.2** - stopwords.tokens[] filtering
 - **0.1.3** - tagStopwords.tokens[] filtering
 - **0.1.4** - categories.rules[] assignment
+- **0.1.5** - bundles.groups{} creates bundles in bundles.json
+- **0.1.6** - Invalid config throws Zod error with field paths
+- **0.2.6** - SKILL.md without frontmatter uses id as name
+- **0.2.7** - Empty skillsDir returns { total: 0, skills: [] }
 
 ---
 
 ## Layer 0 — Catalog & Config
 
-### Status: ⚠️ PARTIAL (16/21 items)
+### Status: ⚠️ PARTIAL (20/21 items)
 
 #### ✅ Verified (2025-03-26)
 - [x] **0.1.1** - `loadConfig()` parses `skills.config.json` with Zod validation, includes fallback for missing files
 - [x] **0.1.2** - `stopwords.tokens[]` filtering works: `buildTriggers()` filters tokens matching stopwords Set
 - [x] **0.1.3** - `tagStopwords.tokens[]` filtering works: `deriveTags()` filters tags when deriving from id
 - [x] **0.1.4** - Category rules work: `detectCategory()` iterates rules in order, first match wins
+- [x] **0.1.5** - `bundles.groups{}` creates bundles in bundles.json with matching skills
+- [x] **0.1.6** - Invalid config throws Zod error with `issues[]` specifying invalid field paths
+- [x] **0.2.6** - SKILL.md without frontmatter: `readSkill()` uses id as name, description=""
+- [x] **0.2.7** - Empty skillsDir: `listSkillIds()` returns [], buildCatalog returns { total: 0, skills: [] }
 
 #### ✅ Implemented (Code exists)
 - `skills.config.json` with required fields (version 1.0.0)
@@ -47,10 +55,9 @@
 - `scripts/run-checklist-tests.js` - Test runner script
 
 #### ❌ Missing
-- [ ] 0.1.5-0.1.6 - Bundle group and invalid config tests
 - [ ] 0.1.7 - JSON Schema validation (skills.config.schema.json)
 - [ ] 0.1.8 - YAML support
-- [ ] 0.2.1-0.2.8 - Catalog builder tests (partially covered in new tests)
+- [ ] 0.2.1-0.2.5, 0.2.8 - Remaining catalog builder tests
 - [ ] 0.3.1-0.3.12 - MCP tool tests (no MCP client testing)
 
 #### 🟡 Issues Resolved

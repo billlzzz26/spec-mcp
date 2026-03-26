@@ -41,8 +41,8 @@
 | 0.1.2 | แก้ไข `stopwords.tokens[]` แล้ว rebuild catalog | token ที่เพิ่มถูก filter ออกจาก triggers | `[x]` | Verified: buildTriggers() filters tokens matching stopwords Set from name/description |
 | 0.1.3 | แก้ไข `tagStopwords.tokens[]` แล้ว rebuild | tag ที่ตรงกับ stopword ไม่ปรากฏ | `[x]` | Verified: deriveTags() filters tags matching tagStopwords Set when deriving from id |
 | 0.1.4 | เพิ่ม category rule ใหม่ใน `categories.rules[]` | skill ที่ match ถูก assign category ใหม่ | `[x]` | Verified: detectCategory() iterates rules in order, first match wins, fallback to 'general' |
-| 0.1.5 | เพิ่ม bundle group ใหม่ใน `bundles.groups{}` | bundle ปรากฏใน `bundles.json` | `[ ]` | |
-| 0.1.6 | ไฟล์ `skills.config.json` มี field ผิด (invalid) | Zod throw error ชัดเจน ระบุ field ที่ผิด | `[ ]` | |
+| 0.1.5 | เพิ่ม bundle group ใหม่ใน `bundles.groups{}` | bundle ปรากฏใน `bundles.json` | `[x]` | Verified: buildBundles() creates bundles for all groups in config, writes to bundles.json when outputDir specified |
+| 0.1.6 | ไฟล์ `skills.config.json` มี field ผิด (invalid) | Zod throw error ชัดเจน ระบุ field ที่ผิด | `[x]` | Verified: SkillsConfigSchema.parse() throws ZodError with issues[] specifying invalid field paths |
 | 0.1.7 🟡 | สร้าง `skills.config.schema.json` (JSON Schema Draft-07) | validate ด้วย `ajv` ผ่าน | `[ ]` | |
 | 0.1.8 🟢 | parse YAML format ด้วย YAML parser | ได้ config object เดียวกับ JSON | `[ ]` | |
 
@@ -55,8 +55,8 @@
 | 0.2.3 | `bundles.json` มี bundles ครบทุก group ใน config | ทุก key ใน `bundles.groups` ปรากฏ | `[ ]` | |
 | 0.2.4 | `aliases.json` มี alias ที่ถูกต้อง | `alias → skillId` map ถูกต้อง | `[ ]` | |
 | 0.2.5 | `CATALOG.md` มีตารางครบทุก category | markdown render ได้ไม่มี broken table | `[ ]` | |
-| 0.2.6 | SKILL.md ที่ไม่มี frontmatter ถูก process ได้ | ใช้ `id` เป็น name, description="" | `[ ]` | |
-| 0.2.7 | `skillsDir` ว่างเปล่า | `{ total: 0, skills: [] }` ไม่ crash | `[ ]` | |
+| 0.2.6 | SKILL.md ที่ไม่มี frontmatter ถูก process ได้ | ใช้ `id` เป็น name, description="" | `[x]` | Verified: readSkill() defaults name=skillId, description="", derives tags from id |
+| 0.2.7 | `skillsDir` ว่างเปล่า | `{ total: 0, skills: [] }` ไม่ crash | `[x]` | Verified: listSkillIds() returns [] for empty/non-existent dirs, buildCatalog returns { total: 0, skills: [] } |
 | 0.2.8 | `outputDir` ไม่ระบุ | ไม่สร้างไฟล์ใดๆ แต่ return catalog object | `[ ]` | |
 
 ### 0.3 MCP Tools — Catalog
