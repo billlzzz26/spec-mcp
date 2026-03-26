@@ -1,6 +1,6 @@
 ---
 name: CHECKLIST_VERIFICATION
-description: vertification TODO.md shutdule today.
+description: verification TODO.md schedule today.
 creat: 2026-03-15
 update: 26026-03-26
 ---
