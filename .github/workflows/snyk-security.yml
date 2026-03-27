@@ -47,8 +47,10 @@ jobs:
         #  with:
         #    node-version: 20
 
-        # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
-          uses: snyk/actions/setup@806182742461562b67788a64410098c9d9b96adb
+       - name: Snyk Code test
+         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
+         # Use || true to not fail the pipeline
+         run: snyk code test --sarif-file-output=snyk-code.sarif || true
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
         # Use || true to not fail the pipeline
       - name: Snyk Code test
